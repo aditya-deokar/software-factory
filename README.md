@@ -1,15 +1,44 @@
+<div align="center">
+
 # Software Factory
 
-Agent skills for shipping software with proof. Ten skills that take a task from
-an isolated branch to a merged PR with evidence attached, wired together by a
-single `AGENTS.md` workflow.
+**Agent skills for shipping software with proof.**
 
-Works with Claude Code, Cursor, Codex, GitHub Copilot, OpenCode, Windsurf, and
-[75 more agents](https://github.com/vercel-labs/skills#supported-agents).
+Ten skills that take a task from an isolated branch to a merged PR with evidence attached, wired together by one `AGENTS.md` workflow.
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@software-factory/skills"><img src="https://img.shields.io/npm/v/@software-factory/skills?style=flat-square&color=black" alt="npm version" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License: MIT" /></a>
+  <a href="skills/"><img src="https://img.shields.io/badge/skills.sh-10%20skills-black?style=flat-square&logo=gnubash&logoColor=white" alt="10 skills" /></a>
+  <a href="AGENTS.md"><img src="https://img.shields.io/badge/workflow-AGENTS.md-22c55e?style=flat-square" alt="Workflow: AGENTS.md" /></a>
+  <a href="https://github.com/vercel-labs/skills#supported-agents"><img src="https://img.shields.io/badge/agents-80%2B%20supported-6366f1?style=flat-square" alt="Supported Agents" /></a>
+</p>
+
+<p align="center">
+  <a href="#the-four-beats">The four beats</a> &bull;
+  <a href="#all-ten-skills">All ten skills</a> &bull;
+  <a href="#install">Install</a> &bull;
+  <a href="#why-this-exists">Why this exists</a> &bull;
+  <a href="#documentation">Documentation</a>
+</p>
+
+</div>
+
+```text
+┌────────────┐     ┌────────────┐     ┌────────────┐     ┌────────────┐
+│ 1. ISOLATE │     │  2. BUILD  │     │  3. PROVE  │     │  4. SHIP   │
+│  worktree  │ ──► │  service   │ ──► │ test video │ ──► │visual diff │
+│ zero clash │     │ boundaries │     │  evidence  │     │5/5 Greptile│
+└────────────┘     └────────────┘     └────────────┘     └────────────┘
+```
 
 ```bash
 npx skills add aditya-deokar/software-factory
 ```
+
+Works with Claude Code, Cursor, Codex, GitHub Copilot, OpenCode, Windsurf, and [75 more agents](https://github.com/vercel-labs/skills#supported-agents).
+
+---
 
 ## Why this exists
 
