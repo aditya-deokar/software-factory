@@ -20,6 +20,14 @@ Update this file whenever a skill is added or its provenance changes.
 | `skill-authoring` | written for this repository | MIT | root `LICENSE` |
 | `prose-cleanup` | [cursor/plugins (pstack)](https://github.com/cursor/plugins/tree/main/pstack/skills/unslop) | MIT | `skills/prose-cleanup/LICENSE` |
 | `cross-platform-shell` | written for this repository | MIT | root `LICENSE` |
+| `issue-triage` | written for this repository (v3) | MIT | root `LICENSE` |
+| `spec-writing` | written for this repository (v3) | MIT | root `LICENSE` |
+| `release-monitoring` | written for this repository (v3) | MIT | root `LICENSE` |
+| `run-ledger` | written for this repository (v3) | MIT | root `LICENSE` |
+| `agent-memory` | written for this repository (v3) | MIT | root `LICENSE` |
+| `skill-feedback-loop` | written for this repository (v3) | MIT | root `LICENSE` |
+| `model-routing` | written for this repository (v3) | MIT | root `LICENSE` |
+| `factory-setup` | written for this repository (v3) | MIT | root `LICENSE` |
 
 ## On the three rewritten skills
 

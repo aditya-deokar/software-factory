@@ -15,8 +15,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Validate frontmatter and layout
+      - name: Validate frontmatter, layout, AGENTS.md index, plugin manifests
         run: node scripts/lint-skills.mjs
+      # Skills install one at a time, so each carries a copy of shared/.
+      - name: Shared copies match shared/
+        run: node scripts/sync-shared.mjs --check
+      # This repo runs its own factory. Exit 2 (nothing checked) fails too.
+      - name: This repo's .factory/ validates
+        run: node skills/factory-setup/scripts/check-factory.mjs .factory
 
   discover:
     name: Discovery (${{ matrix.os }})
@@ -49,6 +55,24 @@ jobs:
       # a skill that documents 'vendored-from' in its body is not vendored.
       - name: Vendored licenses ship, no junk in the tarball
         run: node scripts/check-package.mjs
+
+  node-tests:
+    name: Factory scripts (${{ matrix.os }}, Node ${{ matrix.node }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: [20]
+        include:
+          - os: ubuntu-latest
+            node: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: node scripts/run-node-tests.mjs
 
   tests:
     name: Recorder tests

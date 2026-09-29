@@ -14,12 +14,13 @@ rules. Skills: `npx skills add aditya-deokar/software-factory`.
 | Before the first edit | `worktree-isolation` |
 | Writing the code | `service-layer` |
 | Proving it works | `test-evidence`, then `visual-diff` for UI |
-| Opening and reviewing the PR | `code-review-loop` (`-large` past Greptile's file limit) |
+| Opening and reviewing the PR | `code-review-loop`, or `code-review-loop-large` past Greptile's file limit |
 | After merge | `release-monitoring` |
 | Every task, if `.factory/` exists | `run-ledger`, `agent-memory`, `model-routing` |
 | Weekly, or when asked | `skill-feedback-loop` |
 | Text a person will read | `prose-cleanup` |
 | Setting up a repo | `factory-setup` |
+| Writing skills, releasing them, Windows shells | `skill-authoring`, `package-release`, `cross-platform-shell` |
 
 ## Inner loop
 

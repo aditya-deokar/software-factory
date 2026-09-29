@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Run ledger: one JSON record per task under .factory/runs/.
 // Usage: node ledger.mjs <command> [args]   (node ledger.mjs help for the list)
+import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -37,7 +38,10 @@ const HELP = `run ledger, one record per task in .factory/runs/
   current                                               id of the open run on this branch
   beat    <id|current> <beat> [--set k=v]... [--add k=v]...
   touch   <id|current> --beat <b> --kind <k> [--ref url] [--note text]
-  finish  <id|current> --outcome <o> [--no-tokens]
+  finish  <id|current> --outcome <o> [--no-tokens] [--scope worktree|repo]
+          --scope repo also counts sessions started in other worktrees of this
+          repository (e.g. a session in the main checkout that cd's into the
+          task worktree); it over-counts if parallel sessions ran meanwhile
   show    <id|current>
   list    [--open]
   report  [--since 14d] [--json]
@@ -151,20 +155,34 @@ export function recordTouch(dir, id, { beat, kind, ref, note }, now = new Date()
   return run;
 }
 
-export function finishRun(dir, id, { outcome, tokens = true, cwd, now = new Date() }) {
+/** Every worktree path of the repository containing cwd. */
+function worktreePaths(cwd) {
+  try {
+    const out = execFileSync("git", ["worktree", "list", "--porcelain"], { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
+    return out.split(/\r?\n/).filter((l) => l.startsWith("worktree ")).map((l) => l.slice(9));
+  } catch {
+    return [repoRoot(cwd)];
+  }
+}
+
+export function finishRun(dir, id, { outcome, tokens = true, scope = "worktree", cwd, now = new Date() }) {
+  if (!["worktree", "repo"].includes(scope)) fail("--scope must be worktree or repo");
   if (!OUTCOMES.includes(outcome)) fail(`--outcome must be one of: ${OUTCOMES.join(", ")}`);
   const run = load(dir, id);
   run.outcome = outcome;
   run.finished_at = nowIso(now);
   // Re-finishing (shipped, later merged) keeps the first token count unless it was empty.
   if (tokens && !run.cost) {
-    const events = collectEvents({
-      repoPath: repoRoot(cwd),
-      fromMs: Date.parse(run.started_at),
-      toMs: now.getTime(),
-      kinds: ["usage"],
-    });
-    run.cost = sumUsage(events);
+    const paths = scope === "repo" ? worktreePaths(cwd) : [repoRoot(cwd)];
+    const events = paths.flatMap((repoPath) =>
+      collectEvents({ repoPath, fromMs: Date.parse(run.started_at), toMs: now.getTime(), kinds: ["usage"] })
+    );
+    // A nested worktree path would match twice; count each usage event once.
+    const seen = new Set();
+    run.cost = sumUsage(events.filter((e) => {
+      const k = `${e.file}|${e.ts}|${e.input}|${e.output}`;
+      return !seen.has(k) && seen.add(k);
+    }));
   }
   save(dir, run);
   return run;
@@ -282,7 +300,7 @@ function main(argv) {
       break;
     }
     case "finish": {
-      const run = finishRun(dir, resolveId(dir, rest[0]), { outcome: args.outcome, tokens: !args["no-tokens"] });
+      const run = finishRun(dir, resolveId(dir, rest[0]), { outcome: args.outcome, tokens: !args["no-tokens"], scope: args.scope || "worktree" });
       const c = run.cost;
       console.log(`${run.id}: ${run.outcome}, tokens ${c ? `${fmt(c.input_tokens)} in, ${fmt(c.cached_input_tokens)} cached, ${fmt(c.output_tokens)} out (${c.source})` : "unknown"}`);
       break;

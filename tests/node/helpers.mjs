@@ -32,11 +32,12 @@ export function write(file, content) {
 }
 
 /** Runs a node script, returns { code, out, err }. */
-export function run(script, args, { cwd, env } = {}) {
+export function run(script, args, { cwd, env, input } = {}) {
   const r = spawnSync(process.execPath, [script, ...args], {
     cwd,
     encoding: "utf8",
     env: { ...process.env, ...env },
+    input,
   });
   return { code: r.status, out: r.stdout, err: r.stderr };
 }

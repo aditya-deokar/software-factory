@@ -167,10 +167,84 @@ if (!names.length) {
 }
 
 const seen = new Map();
+const allFields = new Map();
 for (const n of names) {
   const f = lintSkill(n);
+  if (f) allFields.set(n, f);
   if (f?.description) seen.set(n, f.description.toLowerCase());
 }
+
+// --- repo-level checks: the files that tie the skills together ---
+const AGENTS_BUDGET = 6000;
+const read = (rel) => (existsSync(join(ROOT, rel)) ? readFileSync(join(ROOT, rel), "utf8") : null);
+const json = (rel) => {
+  const text = read(rel);
+  if (text === null) return null;
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    errors.push(`${rel}: not valid JSON (${e.message})`);
+    return null;
+  }
+};
+
+// AGENTS.md is always loaded, so it has a size budget, and it is the only
+// place an agent learns a skill exists; every skill must be in its index.
+const agents = read("AGENTS.md");
+if (agents !== null) {
+  if (agents.length > AGENTS_BUDGET)
+    errors.push(`AGENTS.md: ${agents.length} chars, over the ${AGENTS_BUDGET} budget; move depth into skills`);
+  for (const n of names)
+    if (!agents.includes(`\`${n}\``)) errors.push(`AGENTS.md: skill "${n}" is missing from the skills index`);
+}
+const readme = read("README.md");
+if (readme !== null) {
+  for (const n of names)
+    if (!readme.includes(`skills/${n}/SKILL.md`)) errors.push(`README.md: skill "${n}" is not linked (skills/${n}/SKILL.md)`);
+  for (const m of readme.matchAll(/skills\/([a-z0-9-]+)\/SKILL\.md/g))
+    if (!names.includes(m[1])) errors.push(`README.md: links skills/${m[1]}/SKILL.md, which does not exist`);
+}
+
+// Friction patterns and skills point at each other: every pattern has an
+// owner that exists, and every key a skill claims is a real pattern.
+const patterns = json("shared/friction-patterns.json");
+if (Array.isArray(patterns)) {
+  const keys = new Set(patterns.map((p) => p.key));
+  for (const p of patterns) {
+    if (p.owner !== "AGENTS.md" && !names.includes(p.owner))
+      errors.push(`friction pattern "${p.key}": owner "${p.owner}" is not a skill or AGENTS.md`);
+    const owner = allFields.get(p.owner);
+    if (owner && !owner["metadata.vendored-from"] && !String(owner["metadata.signals"] || "").includes(p.key))
+      warnings.push(`${p.owner}: owns friction pattern "${p.key}" but does not list it in metadata.signals`);
+  }
+  for (const [n, f] of allFields) {
+    const claimed = String(f["metadata.signals"] || "").replace(/["[\]]/g, "").split(",").map((s) => s.trim()).filter(Boolean);
+    for (const k of claimed) if (!keys.has(k)) errors.push(`${n}: metadata.signals names "${k}", which is not a friction pattern`);
+  }
+}
+
+// Plugin manifests ship the same version as the package, and every hook
+// command points at a script that exists.
+const pkg = json("package.json");
+for (const rel of [".claude-plugin/plugin.json", ".codex-plugin/plugin.json"]) {
+  const m = json(rel);
+  if (m && pkg && m.version !== pkg.version) errors.push(`${rel}: version ${m.version} does not match package.json ${pkg.version}`);
+}
+const market = json(".claude-plugin/marketplace.json");
+for (const p of market?.plugins || [])
+  if (pkg && p.version && p.version !== pkg.version)
+    errors.push(`.claude-plugin/marketplace.json: ${p.name} version ${p.version} does not match package.json ${pkg.version}`);
+const hooks = read("hooks/hooks.json");
+if (hooks !== null) {
+  json("hooks/hooks.json");
+  for (const m of hooks.matchAll(/\$\{CLAUDE_PLUGIN_ROOT\}\/([^"\\]+)/g))
+    if (!existsSync(join(ROOT, m[1]))) errors.push(`hooks/hooks.json: runs ${m[1]}, which does not exist`);
+}
+const cmdDir = join(ROOT, "commands");
+if (existsSync(cmdDir))
+  for (const f of readdirSync(cmdDir).filter((x) => x.endsWith(".md")))
+    if (!/^---\r?\n[\s\S]*?\bdescription:\s*\S[\s\S]*?\r?\n---/.test(readFileSync(join(cmdDir, f), "utf8")))
+      errors.push(`commands/${f}: needs frontmatter with a description`);
 
 // Overlapping triggers make invocation unreliable; flag near-duplicate descriptions.
 const entries = [...seen.entries()];
