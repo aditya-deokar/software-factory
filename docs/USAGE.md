@@ -62,9 +62,15 @@ Let `factory-setup` do it. Ask the agent to "set up the factory", or run it
 yourself and read the plan first:
 
 ```bash
-node .claude/skills/factory-setup/scripts/setup.mjs --dry-run
-node .claude/skills/factory-setup/scripts/setup.mjs
+# Finds the script whether the skills are installed per project or globally.
+SETUP="$(find .claude/skills .agents/skills ~/.claude/skills ~/.agents/skills \
+  -path '*factory-setup/scripts/setup.mjs' 2>/dev/null | head -1)"
+node "$SETUP" --dry-run
+node "$SETUP"
 ```
+
+On Windows PowerShell, the global copy is under
+`$HOME\.claude\skills\factory-setup\scripts\setup.mjs`.
 
 It creates `.factory/` and writes `AGENTS.md` (or appends a marked section to
 yours). It never overwrites a file, so rerunning it is safe. Add `--workflows`
@@ -116,11 +122,15 @@ one decision. "Implement" moves straight on. "Spec" sends it to
 at the top, and waits for you to approve it. Say "approved" or approve the
 PR; that approval lands in the run record.
 
-The agent routes the task and starts a run:
+The agent routes the task, then starts a run with the flags the route command
+printed. Copy them rather than typing a tier, or the ledger records a route
+that was never taken:
 
 ```bash
 node <skills>/model-routing/scripts/route.mjs --beat build --class bugfix --size small
-node <skills>/run-ledger/scripts/ledger.mjs start --class bugfix --size small --tier fast --rule chore-small
+# tier balanced, model sonnet, rule default
+# ledger flags: --tier balanced --model sonnet --rule default
+node <skills>/run-ledger/scripts/ledger.mjs start --class bugfix --size small --tier balanced --model sonnet --rule default
 ```
 
 ### 1. Isolate

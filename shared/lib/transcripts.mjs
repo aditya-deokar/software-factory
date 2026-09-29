@@ -8,7 +8,7 @@
 // last_token_usage per turn; input_tokens there includes the cached share.
 import { existsSync, readFileSync, readdirSync, realpathSync, statSync } from "node:fs";
 import { homedir } from "node:os";
-import { basename, dirname, join } from "node:path";
+import { basename, dirname, isAbsolute, join } from "node:path";
 
 export function transcriptRoots() {
   return {
@@ -54,6 +54,10 @@ export function transcriptFiles(sinceMs = 0) {
 // every transcript line is compared.
 const realCache = new Map();
 function real(p) {
+  // A path that is not absolute here (C:/x on Linux, a transcript from another
+  // machine) cannot be resolved; walking up from it would reach "." and splice
+  // in the current directory. Compare those as written.
+  if (!isAbsolute(p)) return p;
   if (!realCache.has(p)) {
     // Resolve the nearest ancestor that exists and re-append the rest, so a
     // deleted subfolder of a symlinked repo still maps into the real repo.

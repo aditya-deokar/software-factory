@@ -40,7 +40,7 @@ SKILL_DIR="$(dirname "$(find skills .claude/skills .agents/skills ~/.claude/skil
 ## Route a task
 
 ```bash
-node "$SKILL_DIR/scripts/route.mjs" --beat build --class bugfix --size small
+node "$SKILL_DIR/scripts/route.mjs" --beat build --class ci-fix --size small
 # tier fast, model haiku, rule chore-small
 # ledger flags: --tier fast --model haiku --rule chore-small
 ```
