@@ -27,6 +27,8 @@
   "type": "module",
   "files": [
     "skills/",
+    "!**/__pycache__/**",
+    "!**/*.py[cod]",
     "AGENTS.md",
     "NOTICE.md",
     "README.md",
@@ -34,9 +36,11 @@
   ],
   "scripts": {
     "lint": "node scripts/lint-skills.mjs",
+    "sync": "node scripts/sync-shared.mjs",
     "list": "npx skills add . --list",
-    "test": "node scripts/lint-skills.mjs && node scripts/check-package.mjs && python -m pytest tests/ -q",
-    "prepublishOnly": "node scripts/lint-skills.mjs && node scripts/check-package.mjs"
+    "test:node": "node scripts/run-node-tests.mjs",
+    "test": "node scripts/lint-skills.mjs && node scripts/sync-shared.mjs --check && node scripts/check-package.mjs && node scripts/run-node-tests.mjs && python -m pytest tests/ -q",
+    "prepublishOnly": "node scripts/lint-skills.mjs && node scripts/sync-shared.mjs --check && node scripts/check-package.mjs"
   },
   "publishConfig": {
     "access": "public"
