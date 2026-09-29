@@ -75,7 +75,7 @@ node "$LEDGER" finish <run-id> --outcome merged
 
 `status` is `clean`, `regression`, `pending` (ran out of watch time), or
 `skipped` (switched off, or nothing to check). The run id is on the PR's
-`Run:` line.
+`Run:` line, and `$LEDGER` is resolved as shown in `run-ledger`.
 
 ## When something is broken
 

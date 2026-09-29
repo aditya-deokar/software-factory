@@ -5,7 +5,30 @@ install and a listing on skills.sh.
 
 Everything below assumes the repo root is `C:\Users\adity\Documents\Software Factory`
 and that the layout is already correct. It is; `npx skills add . --list` finds
-all ten skills today.
+all eighteen skills today. The phases below were written for v1 and still
+describe how publishing works; the v3 status is right after this paragraph.
+
+## v3 status
+
+v3 turns the package into a self-improving factory. The plan is
+[V3-PLAN.md](V3-PLAN.md), the decisions are in
+[adr/0001-v3-factory.md](adr/0001-v3-factory.md).
+
+| Phase | Status |
+|---|---|
+| 0. Prep and baseline | done ([research/v2-baseline.md](research/v2-baseline.md)) |
+| 1. Data plane | done |
+| 2. Inner loop expansion | done |
+| 3. Persistent memory | done |
+| 4. Skill feedback loop | done |
+| 5. Model routing | done |
+| 6. Mechanisms and packaging | done |
+| 7. Dogfood and measure | started: this repo runs its own factory; the two-week numbers are pending ([research/v3-results.md](research/v3-results.md)) |
+| 8. Docs and release | docs done; npm publish of 3.0.0 waits for a go-ahead |
+
+v3.x follow-ups: fill in the Phase 7 table after two weeks of use, run a
+routing eval on real tasks, and decide on a static `factory-report --html`
+board.
 
 ## Provenance, which is settled
 
@@ -34,10 +57,10 @@ the notice survives, and CI fails the build if it does not.
 - [x] Old git history and the upstream remote removed.
 - [x] Canonical layout: `skills/<name>/SKILL.md` at the repo root, the first
       container directory the CLI walks.
-- [x] All ten skills carry `name`, `description`, `license`, `compatibility`,
+- [x] All v1 skills (ten) carry `name`, `description`, `license`, `compatibility`,
       and `metadata`. Vendored ones also carry `metadata.vendored-from`.
 - [x] `scripts/lint-skills.mjs` validates the lot. 0 errors.
-- [x] `npx skills add . --list` reports "Found 10 skills".
+- [x] `npx skills add . --list` reports "Found 10 skills" (18 as of v3).
 - [x] Three skills rewritten as original work, recorder replaced.
 - [x] `package.json`, `LICENSE`, `NOTICE.md`, `.gitattributes`, CI workflow.
 - [x] Two portability bugs fixed: `visual-diff` resolved scripts against
