@@ -62,15 +62,16 @@ Let `factory-setup` do it. Ask the agent to "set up the factory", or run it
 yourself and read the plan first:
 
 ```bash
-# Finds the script whether the skills are installed per project or globally.
-SETUP="$(find .claude/skills .agents/skills ~/.claude/skills ~/.agents/skills \
+# Finds the script for a per-project, global, or plugin install.
+SETUP="$(find .claude/skills .agents/skills ~/.claude/skills ~/.agents/skills ~/.claude/plugins \
   -path '*factory-setup/scripts/setup.mjs' 2>/dev/null | head -1)"
 node "$SETUP" --dry-run
 node "$SETUP"
 ```
 
 On Windows PowerShell, the global copy is under
-`$HOME\.claude\skills\factory-setup\scripts\setup.mjs`.
+`$HOME\.claude\skills\factory-setup\scripts\setup.mjs`, and a plugin install
+puts it under `$HOME\.claude\plugins`.
 
 It creates `.factory/` and writes `AGENTS.md` (or appends a marked section to
 yours). It never overwrites a file, so rerunning it is safe. Add `--workflows`

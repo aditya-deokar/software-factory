@@ -42,7 +42,7 @@ LEDGER="$SKILL_DIR/scripts/ledger.mjs"
 PowerShell:
 
 ```powershell
-$LEDGER = (Get-ChildItem -Recurse -Filter ledger.mjs -Path skills,.claude\skills,.agents\skills,$HOME\.claude\skills -ErrorAction SilentlyContinue | Select-Object -First 1).FullName
+$LEDGER = (Get-ChildItem -Recurse -Filter ledger.mjs -Path skills,.claude\skills,.agents\skills,$HOME\.claude\skills,$HOME\.claude\plugins -ErrorAction SilentlyContinue | Select-Object -First 1).FullName
 ```
 
 Every command below is `node "$LEDGER" ...`. `current` stands for the open
