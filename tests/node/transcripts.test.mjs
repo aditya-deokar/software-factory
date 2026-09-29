@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { copyFileSync, mkdirSync, utimesSync } from "node:fs";
+import { copyFileSync, mkdirSync, symlinkSync, utimesSync } from "node:fs";
 import { join } from "node:path";
 import { after, before, test } from "node:test";
 import { collectEvents, inside, normPath, readEvents, sumUsage } from "../../shared/lib/transcripts.mjs";
@@ -46,6 +46,14 @@ test("path matching survives drive letters, slashes, and Git Bash paths", () => 
   assert.ok(inside("/c/work/demo", "C:\\work\\demo"));
   assert.ok(!inside("c:/work/demo-other", "c:/work/demo"));
   assert.ok(!inside(null, "c:/work/demo"));
+});
+
+test("a repo reached through a symlink or junction still matches its real path", () => {
+  const realDir = tempDir("sf-real-");
+  const link = join(tempDir("sf-link-"), "repo");
+  symlinkSync(realDir, link, process.platform === "win32" ? "junction" : "dir");
+  assert.ok(inside(join(link, "sub"), realDir));
+  assert.ok(inside(realDir, link));
 });
 
 let roots;

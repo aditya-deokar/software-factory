@@ -32,6 +32,9 @@
         "test-suite",
         "output-pair"
       ]
+    },
+    "ship": {
+      "pr": 2
     }
   },
   "memories": {
