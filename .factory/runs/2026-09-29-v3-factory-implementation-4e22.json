@@ -32,6 +32,11 @@
         "test-suite",
         "output-pair"
       ]
+    },
+    "ship": {
+      "pr": 2,
+      "review_rounds": 3,
+      "final_score": "5/5"
     }
   },
   "memories": {
@@ -47,8 +52,14 @@
       "at": "2026-09-29T15:10:25Z"
     }
   ],
-  "cost": null,
+  "cost": {
+    "input_tokens": 516795,
+    "cached_input_tokens": 32519596,
+    "output_tokens": 85056,
+    "usd": null,
+    "source": "claude-code transcript"
+  },
   "started_at": "2026-09-29T15:10:18Z",
-  "finished_at": null,
-  "outcome": null
+  "finished_at": "2026-09-29T17:26:05Z",
+  "outcome": "shipped"
 }

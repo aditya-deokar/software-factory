@@ -90,7 +90,7 @@ The spec is approved when a human says so: a PR approval, a merge, or an
 explicit "approved" comment. Silence is not approval, and neither is a
 thumbs-up on an unrelated comment.
 
-Record it:
+Record it (`$LEDGER` is resolved as shown in `run-ledger`):
 
 ```bash
 node "$LEDGER" beat current spec --set path=specs/<slug>.md --set approved=true

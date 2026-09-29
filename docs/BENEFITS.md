@@ -127,7 +127,7 @@ The 31 patterns are specific enough to be checkable rather than aspirational.
 why is my skill not firing? Nearly always the description, because the agent
 never reads the body until the description convinces it to.
 
-Directly relevant to you now that you maintain a ten-skill package.
+Directly relevant to you now that you maintain an eighteen-skill package.
 
 ### package-release
 
@@ -148,6 +148,83 @@ package assume POSIX. The `.gitattributes` file in this repo exists because of
 this skill, and it prevents the `bad interpreter: /bin/sh^M` failure that hits
 every cross-platform repo without one.
 
+## The v3 skills
+
+These pay off later than the v2 ones. A worktree helps on the first task. A
+ledger helps once it has a few weeks of runs in it.
+
+### issue-triage
+
+**Returns** fewer wrong PRs. A vague issue that goes straight to code comes
+back as the wrong change; a duplicate fixed twice costs both. Triage is also
+the cheapest step to run on a small model.
+
+**Costs** a few minutes per issue, and a triage label nobody reads is wasted.
+Worth it once issues arrive faster than one person reads them.
+
+### spec-writing
+
+**Returns** misunderstandings caught in a two-page document instead of a
+finished implementation. The open-questions-at-the-top format turns review
+into "1 yes, 2 no".
+
+**Costs** a round trip with a human before code starts. Wrong for anything
+unambiguous; triage decides which tasks need one.
+
+### release-monitoring
+
+**Returns** regressions found by the factory instead of by users, and a
+regression issue already linked to the PR that caused it.
+
+**Costs** little with no deploy or error tracker to check, and it tells less
+there too: CI on the merge commit is then the whole check.
+
+### run-ledger
+
+**Returns** numbers. Review rounds by class of work, how often a person had
+to correct the agent and at which beat, tokens per shipped PR. Without these,
+"is the factory working?" is an opinion.
+
+**Costs** a few commands per task, and it only measures what agents record.
+The Stop hook catches the most common gap (a shipped run left open) in Claude
+Code only.
+
+### agent-memory
+
+**Returns** root causes not rediscovered, and corrections not repeated. Each
+memory is reviewed in a PR, so a wrong fact does not spread quietly.
+
+**Costs** discipline about what not to save. A memory folder full of task
+logs is noise that every task pays to read. The index budget and `prune`
+keep it honest.
+
+### model-routing
+
+**Returns** the biggest cost lever in the factory: triage, docs, and small
+fixes on a fast model, specs and migrations on a frontier one.
+
+**Costs** an eval before any rule change you want to trust, and evals spend
+real tokens. Without evals, routing is a documented guess, which still beats
+an undocumented one.
+
+### skill-feedback-loop
+
+**Returns** skills that improve from how they fail, through PRs a person can
+reject. The follow-up check flags a change that did not help, so the skills
+do not collect dead rules.
+
+**Costs** weeks of data before it says anything, and local transcripts for
+its best signal. Regex patterns misfire; reading the samples is part of the
+job.
+
+### factory-setup
+
+**Returns** a working `.factory/` and `AGENTS.md` in one command, and a
+validator for CI.
+
+**Costs** nothing to run. The workflow templates cost API credits once
+enabled.
+
 ## What publishing gets you
 
 **A canonical copy.** One `npx skills add` and any machine has your setup. No
@@ -161,7 +238,7 @@ ability to pin a working version when a change breaks something.
 run on every push. A skill with broken YAML is invisible to the agent with no
 error message anywhere. That failure mode is why the linter exists.
 
-**A public artifact.** A ten-skill package with CI, licensing done properly,
+**A public artifact.** An eighteen-skill package with CI, licensing done properly,
 and real documentation is a better demonstration of how you work than a resume
 bullet. It shows an opinion about how software gets shipped, backed by tooling.
 
@@ -200,6 +277,6 @@ do something else. These raise the floor; they do not guarantee an outcome.
 - Solo work nobody reviews, where evidence has no audience.
 - Repos without Greptile, for the two code-review-loop skills specifically.
 
-A process you resent is a process you abandon. Run the full four beats on work
+A process you resent is a process you abandon. Run the full inner loop on work
 that deserves it and skip to the useful skill otherwise. `AGENTS.md` describes
 the maximum, not the mandatory minimum.

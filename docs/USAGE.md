@@ -53,13 +53,30 @@ immediately.
 
 ## Wire up the workflow
 
-Installing the skills gives your agent ten capabilities it can reach for.
-Copying `AGENTS.md` tells it when to reach for which, in what order. That second
-part is where the value is.
+Installing the skills gives your agent eighteen capabilities it can reach for.
+`AGENTS.md` tells it when to reach for which, in what order, and `.factory/`
+gives the outer loop somewhere to keep its data. That second part is where the
+value is.
+
+Let `factory-setup` do it. Ask the agent to "set up the factory", or run it
+yourself and read the plan first:
 
 ```bash
-cp "C:\Users\adity\Documents\Software Factory\AGENTS.md" your-project/AGENTS.md
+# Finds the script for a per-project, global, or plugin install.
+SETUP="$(find .claude/skills .agents/skills ~/.claude/skills ~/.agents/skills ~/.claude/plugins \
+  -path '*factory-setup/scripts/setup.mjs' 2>/dev/null | head -1)"
+node "$SETUP" --dry-run
+node "$SETUP"
 ```
+
+On Windows PowerShell, the global copy is under
+`$HOME\.claude\skills\factory-setup\scripts\setup.mjs`, and a plugin install
+puts it under `$HOME\.claude\plugins`.
+
+It creates `.factory/` and writes `AGENTS.md` (or appends a marked section to
+yours). It never overwrites a file, so rerunning it is safe. Add `--workflows`
+for the GitHub Actions templates, and read them before committing; the agent
+steps spend API credits.
 
 Then fill in the repo-specific sections at the bottom. The template leaves
 placeholders because an agent that cannot run your tests cannot prove anything.
@@ -95,7 +112,27 @@ is actionable.
 
 ## A task, start to finish
 
-What the four beats look like in practice.
+What the inner loop looks like in practice. v3 adds a triage step before the
+v2 beats and a monitor step after them, and the ledger records each one.
+
+### 0. Triage, and a spec when needed
+
+An issue arrives. `issue-triage` searches memory and closed issues, then makes
+one decision. "Implement" moves straight on. "Spec" sends it to
+`spec-writing`, which opens `specs/<slug>.md` as a PR with the open questions
+at the top, and waits for you to approve it. Say "approved" or approve the
+PR; that approval lands in the run record.
+
+The agent routes the task, then starts a run with the flags the route command
+printed. Copy them rather than typing a tier, or the ledger records a route
+that was never taken:
+
+```bash
+node <skills>/model-routing/scripts/route.mjs --beat build --class bugfix --size small
+# tier balanced, model sonnet, rule default
+# ledger flags: --tier balanced --model sonnet --rule default
+node <skills>/run-ledger/scripts/ledger.mjs start --class bugfix --size small --tier balanced --model sonnet --rule default
+```
 
 ### 1. Isolate
 
@@ -172,6 +209,33 @@ trigger.
 Both need Greptile installed on the repo. Without it neither skill has anything
 to talk to.
 
+The PR body carries a `Run:` line pointing at the run record, and "Memories
+used / written" lines, so a reviewer can see what memory did.
+
+### 5. Monitor
+
+After you merge, `release-monitoring` checks CI on the merge commit, the
+deploy, and whatever error sources your `AGENTS.md` names, then records
+`clean` or opens a `factory:regression` issue that goes back to triage.
+
+## Running the outer loop
+
+Once a week, or when agents keep making the same mistake:
+
+```bash
+node <skills>/run-ledger/scripts/ledger.mjs report --since 14d
+node <skills>/skill-feedback-loop/scripts/friction-report.mjs --since 14d
+```
+
+Or ask for "the factory report" (`/factory-report` in the plugin). To let the
+loop act, ask it to "run the loop" (`/factory-loop`). It opens at most one PR,
+labeled `factory:skill-loop`, that changes one skill and says which number it
+should move. Review it like code; `skill-authoring` has the checklist.
+
+The loop needs two things before it is useful: two windows of run records,
+and local transcripts. On a machine that never ran Claude Code or Codex in
+this repo, the friction report exits 2 and says so.
+
 ## Using single skills without the workflow
 
 Most of these stand alone.
@@ -238,9 +302,13 @@ usual answer, and the fix is a different FFmpeg build, not a flag.
 
 ## What to expect honestly
 
-The four-beat workflow adds real time per task. The worktree setup, the
+The workflow adds real time per task. The worktree setup, the
 recording, the review loop: each costs minutes. It pays off on work that gets
 reviewed by someone else, touches a UI, or runs in parallel with other agents.
+
+The outer loop costs little per task (a few ledger calls) but needs weeks of
+data before it says anything you can trust. Start with the ledger alone, and
+switch the rest on in `.factory/config.json` once there are numbers to read.
 
 For a one-line typo fix in a README, skip to `prose-cleanup` and commit. Running the
 full workflow on trivial changes is how a good process becomes something you

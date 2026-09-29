@@ -14,7 +14,7 @@ compatibility: >
   transcripts when they exist; other harnesses record cost as unknown, never zero.
 metadata:
   author: software-factory
-  version: "1.0"
+  version: "1.1"
 allowed-tools: Bash(node:*) Bash(git:*)
 ---
 
@@ -42,7 +42,7 @@ LEDGER="$SKILL_DIR/scripts/ledger.mjs"
 PowerShell:
 
 ```powershell
-$LEDGER = (Get-ChildItem -Recurse -Filter ledger.mjs -Path skills,.claude\skills,.agents\skills,$HOME\.claude\skills -ErrorAction SilentlyContinue | Select-Object -First 1).FullName
+$LEDGER = (Get-ChildItem -Recurse -Filter ledger.mjs -Path skills,.claude\skills,.agents\skills,$HOME\.claude\skills,$HOME\.claude\plugins -ErrorAction SilentlyContinue | Select-Object -First 1).FullName
 ```
 
 Every command below is `node "$LEDGER" ...`. `current` stands for the open
@@ -97,6 +97,10 @@ defects, and hiding them makes the numbers lie.
 | `rejection` | Spec or PR rejected outright |
 | `clarification` | You asked, they answered, and the answer changed the work |
 | `manual-fix` | The human edited the code themselves |
+
+Only people count. A comment from a review bot (Greptile, Copilot, CodeRabbit)
+is not a human touch; it is already counted in `ship.review_rounds`.
+Recording bot findings as touches inflates the number the outer loop acts on.
 
 Link the comment or message in `--ref` whenever there is one. A touch with a
 link can be checked; a touch without one is a guess.

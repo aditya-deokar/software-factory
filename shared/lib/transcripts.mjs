@@ -6,9 +6,9 @@
 // deduplicated by message id.
 // Codex: ~/.codex/sessions/YYYY/MM/DD/rollout-*.jsonl. token_count events carry
 // last_token_usage per turn; input_tokens there includes the cached share.
-import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, realpathSync, statSync } from "node:fs";
 import { homedir } from "node:os";
-import { join } from "node:path";
+import { basename, dirname, isAbsolute, join } from "node:path";
 
 export function transcriptRoots() {
   return {
@@ -48,10 +48,43 @@ export function transcriptFiles(sinceMs = 0) {
   return files;
 }
 
-/** Normalises a path for comparison: forward slashes, lower case, /c/ to c:/. */
+// The same directory can be spelled differently by git and by a harness: a
+// symlinked parent (/var -> /private/var on macOS) or a Windows 8.3 short name
+// (RUNNER~1). Resolve to the real path when it still exists, cached because
+// every transcript line is compared.
+const realCache = new Map();
+function real(p) {
+  // A path that is not absolute here (C:/x on Linux, a transcript from another
+  // machine) cannot be resolved; walking up from it would reach "." and splice
+  // in the current directory. Compare those as written.
+  if (!isAbsolute(p)) return p;
+  if (!realCache.has(p)) {
+    // Resolve the nearest ancestor that exists and re-append the rest, so a
+    // deleted subfolder of a symlinked repo still maps into the real repo.
+    let head = p;
+    const tail = [];
+    let r = p;
+    while (head) {
+      try {
+        r = join(realpathSync.native(head), ...tail);
+        break;
+      } catch {
+        const parent = dirname(head);
+        if (parent === head) break;
+        tail.unshift(basename(head));
+        head = parent;
+      }
+    }
+    realCache.set(p, r);
+  }
+  return realCache.get(p);
+}
+
+/** Normalises a path for comparison: real path, forward slashes, lower case, /c/ to c:/. */
 export function normPath(p) {
   if (!p) return "";
-  let s = String(p).replace(/\\/g, "/").replace(/\/+$/, "");
+  let s = String(p).replace(/^\/([a-zA-Z])\//, "$1:/");
+  s = real(s).replace(/\\/g, "/").replace(/\/+$/, "");
   s = s.replace(/^\/([a-zA-Z])\//, "$1:/");
   return s.toLowerCase();
 }
