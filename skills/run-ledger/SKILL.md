@@ -14,7 +14,7 @@ compatibility: >
   transcripts when they exist; other harnesses record cost as unknown, never zero.
 metadata:
   author: software-factory
-  version: "1.0"
+  version: "1.1"
 allowed-tools: Bash(node:*) Bash(git:*)
 ---
 

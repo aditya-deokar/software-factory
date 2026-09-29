@@ -40,6 +40,7 @@ renamed or removed. See `docs/MIGRATION-v3.md`.
 - `service-layer` 2.1: a sibling sweep before fixing a pattern bug.
 - `skill-authoring` 1.1: `metadata.signals`, and how to review a loop proposal.
 - `package-release` 1.1: changing the copied workflow contract is a major bump.
+- `run-ledger` 1.1 (after review): bot review comments are review rounds, not human touches.
 - `worktree-isolation` 2.1: owns the `worked-on-main` and `stale-branch`
   friction patterns (metadata only).
 
