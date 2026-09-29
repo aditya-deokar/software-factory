@@ -1,0 +1,20 @@
+{
+  "name": "software-factory",
+  "version": "3.0.0",
+  "description": "A self-improving software factory: triage, spec, isolated build, proof, reviewed PR, monitoring, and an outer loop that improves the skills through reviewed PRs.",
+  "author": {
+    "name": "Aditya Deokar",
+    "url": "https://github.com/aditya-deokar"
+  },
+  "homepage": "https://github.com/aditya-deokar/software-factory#readme",
+  "license": "MIT",
+  "keywords": ["agent-skills", "software-factory", "workflow"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Software Factory",
+    "shortDescription": "Ship every task as a reviewed PR with evidence, and let the factory improve its own skills.",
+    "developerName": "Aditya Deokar",
+    "category": "Productivity",
+    "websiteURL": "https://github.com/aditya-deokar/software-factory"
+  }
+}

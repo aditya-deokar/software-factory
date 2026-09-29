@@ -1,0 +1,13 @@
+{
+  "name": "software-factory",
+  "version": "3.0.0",
+  "description": "A self-improving software factory: triage, spec, isolated build, proof, reviewed PR, and post-merge monitoring, plus an outer loop that measures every run, remembers what agents learn, routes work to the cheapest capable model, and proposes skill fixes as reviewed PRs.",
+  "author": {
+    "name": "Aditya Deokar",
+    "url": "https://github.com/aditya-deokar"
+  },
+  "homepage": "https://github.com/aditya-deokar/software-factory#readme",
+  "repository": "https://github.com/aditya-deokar/software-factory",
+  "license": "MIT",
+  "keywords": ["agent-skills", "software-factory", "workflow", "code-review", "worktree", "test-evidence", "memory", "model-routing"]
+}

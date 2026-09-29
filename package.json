@@ -1,7 +1,7 @@
 {
   "name": "@software-factory/skills",
-  "version": "2.0.0",
-  "description": "Agent skills for shipping software with proof: isolate, build, prove, ship. Works with Claude Code, Cursor, Codex, Copilot, and 75 more agents.",
+  "version": "3.0.0",
+  "description": "A self-improving software factory for coding agents: triage, spec, isolate, build, prove, ship, and monitor, plus an outer loop that measures every run, remembers what agents learn, routes work to the cheapest capable model, and proposes skill fixes as reviewed PRs. Works with Claude Code, Cursor, Codex, Copilot, and 75 more agents.",
   "keywords": [
     "agent-skills",
     "skills",
@@ -12,7 +12,11 @@
     "ai-agents",
     "code-review",
     "worktree",
-    "test-evidence"
+    "test-evidence",
+    "software-factory",
+    "agent-memory",
+    "model-routing",
+    "claude-code-plugin"
   ],
   "homepage": "https://github.com/aditya-deokar/software-factory#readme",
   "bugs": {
@@ -27,6 +31,12 @@
   "type": "module",
   "files": [
     "skills/",
+    "!**/__pycache__/**",
+    "!**/*.py[cod]",
+    ".claude-plugin/",
+    ".codex-plugin/",
+    "commands/",
+    "hooks/",
     "AGENTS.md",
     "NOTICE.md",
     "README.md",
@@ -34,9 +44,11 @@
   ],
   "scripts": {
     "lint": "node scripts/lint-skills.mjs",
+    "sync": "node scripts/sync-shared.mjs",
     "list": "npx skills add . --list",
-    "test": "node scripts/lint-skills.mjs && node scripts/check-package.mjs && python -m pytest tests/ -q",
-    "prepublishOnly": "node scripts/lint-skills.mjs && node scripts/check-package.mjs"
+    "test:node": "node scripts/run-node-tests.mjs",
+    "test": "node scripts/lint-skills.mjs && node scripts/sync-shared.mjs --check && node scripts/check-package.mjs && node scripts/run-node-tests.mjs && python -m pytest tests/ -q",
+    "prepublishOnly": "node scripts/lint-skills.mjs && node scripts/sync-shared.mjs --check && node scripts/check-package.mjs"
   },
   "publishConfig": {
     "access": "public"

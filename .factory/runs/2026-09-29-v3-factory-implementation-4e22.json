@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "id": "2026-09-29-v3-factory-implementation-4e22",
+  "title": "v3 factory implementation",
+  "branch": "agent/v3-factory",
+  "task": {
+    "source": "docs/V3-PLAN.md",
+    "class": "feature",
+    "size": "large"
+  },
+  "harness": "claude-code",
+  "model": {
+    "tier": "frontier",
+    "id": "claude-opus-5-5",
+    "rule": "large"
+  },
+  "beats": {
+    "triage": {
+      "decision": "spec"
+    },
+    "spec": {
+      "path": "docs/V3-PLAN.md",
+      "approved": true
+    },
+    "isolate": {
+      "worktree": "../wt/software-factory-v3",
+      "branch": "agent/v3-factory"
+    },
+    "prove": {
+      "before_captured": true,
+      "evidence": [
+        "test-suite",
+        "output-pair"
+      ]
+    }
+  },
+  "memories": {
+    "used": [],
+    "written": []
+  },
+  "human_touches": [
+    {
+      "beat": "spec",
+      "kind": "approval",
+      "ref": null,
+      "note": "User replied 'implement the plan' to docs/V3-PLAN.md",
+      "at": "2026-09-29T15:10:25Z"
+    }
+  ],
+  "cost": null,
+  "started_at": "2026-09-29T15:10:18Z",
+  "finished_at": null,
+  "outcome": null
+}

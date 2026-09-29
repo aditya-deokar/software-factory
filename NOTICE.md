@@ -20,6 +20,14 @@ Update this file whenever a skill is added or its provenance changes.
 | `skill-authoring` | written for this repository | MIT | root `LICENSE` |
 | `prose-cleanup` | [cursor/plugins (pstack)](https://github.com/cursor/plugins/tree/main/pstack/skills/unslop) | MIT | `skills/prose-cleanup/LICENSE` |
 | `cross-platform-shell` | written for this repository | MIT | root `LICENSE` |
+| `issue-triage` | written for this repository (v3) | MIT | root `LICENSE` |
+| `spec-writing` | written for this repository (v3) | MIT | root `LICENSE` |
+| `release-monitoring` | written for this repository (v3) | MIT | root `LICENSE` |
+| `run-ledger` | written for this repository (v3) | MIT | root `LICENSE` |
+| `agent-memory` | written for this repository (v3) | MIT | root `LICENSE` |
+| `skill-feedback-loop` | written for this repository (v3) | MIT | root `LICENSE` |
+| `model-routing` | written for this repository (v3) | MIT | root `LICENSE` |
+| `factory-setup` | written for this repository (v3) | MIT | root `LICENSE` |
 
 ## On the three rewritten skills
 
@@ -40,6 +48,24 @@ The bundled recorder was replaced as part of this. The original
 its own session format, and its own tests in `tests/test_record.py`.
 
 Nothing from that upstream repository remains in this package.
+
+## Ideas borrowed for v3
+
+v3 takes ideas, not text, from two sources. Nothing below was copied, and
+none of it ships in the package.
+
+- [BuilderIO/agent-native](https://github.com/BuilderIO/agent-native): friction
+  patterns tied to the skill that owns them, the rule that a new instruction
+  must name the measured pattern it should move, "done or blocked" turn
+  endings, proof scaled to the size of a change, memory types and graduation
+  into skills, tiered delegation to cheaper models, sweeping for sibling bugs,
+  a read-only investigator contract, checks with a third "could not run"
+  outcome, and plugin manifests with hooks. That repository has no license
+  file at its root, so every v3 file here was written from scratch.
+- Two conference talks from Warp on self-improving software factories: the
+  lifecycle loop from intake to monitoring, human checkpoints, the outer-loop
+  agent that rewrites skills through reviewed PRs, persistent memory with
+  provenance, and eval-driven model routing.
 
 ## PolyForm Shield and `visual-diff`
 

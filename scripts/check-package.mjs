@@ -59,6 +59,17 @@ for (const pattern of JUNK) {
   if (hit) errors.push(`${pattern} leaked into the package (${hit})`);
 }
 
+// The plugin install path needs these; the skills CLI ignores them.
+for (const required of [".claude-plugin/plugin.json", ".claude-plugin/marketplace.json", "hooks/hooks.json", "hooks/lib/factory.mjs"])
+  if (!files.includes(required)) errors.push(`${required} is missing from the package`);
+
+// Source material and dev-only trees must never ship. shared/ is copied into
+// each skill by scripts/sync-shared.mjs, so the package does not need it.
+for (const prefix of ["agent-native/", "docs/", "tests/", "shared/", ".factory/", "script.md", "script2.md"]) {
+  const hit = files.find((f) => f.startsWith(prefix));
+  if (hit) errors.push(`${prefix} must not ship (${hit})`);
+}
+
 if (!files.includes("NOTICE.md")) errors.push("NOTICE.md is missing from the package");
 if (!files.includes("LICENSE")) errors.push("root LICENSE is missing from the package");
 

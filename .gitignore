@@ -8,3 +8,10 @@ node_modules/
 .env
 .env.local
 CHANGELOG-latest.md
+
+# Local source material for v3 (see docs/adr/0001-v3-factory.md). Never commit:
+# agent-native/ is a nested git checkout with no root license, and the talk
+# transcripts are research notes, not package content.
+agent-native/
+/script.md
+/script2.md
