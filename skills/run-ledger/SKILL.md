@@ -98,6 +98,10 @@ defects, and hiding them makes the numbers lie.
 | `clarification` | You asked, they answered, and the answer changed the work |
 | `manual-fix` | The human edited the code themselves |
 
+Only people count. A comment from a review bot (Greptile, Copilot, CodeRabbit)
+is not a human touch; it is already counted in `ship.review_rounds`.
+Recording bot findings as touches inflates the number the outer loop acts on.
+
 Link the comment or message in `--ref` whenever there is one. A touch with a
 link can be checked; a touch without one is a guess.
 
