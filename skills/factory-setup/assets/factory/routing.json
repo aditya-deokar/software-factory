@@ -8,6 +8,8 @@
   "default": "balanced",
   "rules": [
     { "id": "triage", "match": { "beat": "triage" }, "tier": "fast", "note": "Labeling and dedupe are pattern matching." },
+    { "id": "aim-small", "match": { "beat": "aim", "size": "small" }, "tier": "balanced", "note": "A small task's aim is a judge line and one rung." },
+    { "id": "aim", "match": { "beat": "aim" }, "tier": "frontier", "note": "The aim sets the target every later beat works toward." },
     { "id": "spec", "match": { "beat": "spec" }, "tier": "frontier", "note": "Ambiguity calls are where a strong model earns its price." },
     { "id": "monitor", "match": { "beat": "monitor" }, "tier": "fast" },
     { "id": "docs", "match": { "class": "docs" }, "tier": "fast" },

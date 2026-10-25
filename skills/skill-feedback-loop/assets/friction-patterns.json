@@ -176,5 +176,27 @@
         "I asked the team about it"
       ]
     }
+  },
+  {
+    "key": "aimed-low",
+    "label": "Built the instance when the person wanted the goal behind it",
+    "owner": "ambition-engine",
+    "re": "\\b(think bigger|aim higher|be more ambitious|not ambitious enough|(only|just) (fixed|patched|treated|addressed) the symptoms?|(that's|this is|it's) (just )?a band-?aid|(go|dig) deeper (on|into|than) (this|that|it)|you can do better than (this|that))\\b",
+    "added": "2026-10-25",
+    "examples": {
+      "match": [
+        "think bigger here, this only covers one page",
+        "you only fixed the symptom",
+        "this is just a band-aid",
+        "go deeper on this, read the actual trace",
+        "be more ambitious with the test plan"
+      ],
+      "miss": [
+        "find the root cause of the login crash",
+        "dig into the logs from last night",
+        "we aim to ship on Friday",
+        "the bandage icon is misaligned"
+      ]
+    }
   }
 ]

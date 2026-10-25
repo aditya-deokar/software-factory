@@ -10,6 +10,7 @@ rules. Skills: `npx skills add aditya-deokar/software-factory`.
 | When | Skill |
 |---|---|
 | New issue or request | `issue-triage` |
+| Before choosing what to build | `ambition-engine` |
 | Ambiguous or cross-cutting work | `spec-writing` |
 | Before the first edit | `worktree-isolation` |
 | Writing the code | `service-layer` |
@@ -19,21 +20,28 @@ rules. Skills: `npx skills add aditya-deokar/software-factory`.
 | Every task, if `.factory/` exists | `run-ledger`, `agent-memory`, `model-routing` |
 | Weekly, or when asked | `skill-feedback-loop` |
 | Text a person will read | `prose-cleanup` |
-| Setting up a repo | `factory-setup` |
+| Setting up a repo, or after upgrading the skills | `factory-setup` |
 | Writing skills, releasing them, Windows shells | `skill-authoring`, `package-release`, `cross-platform-shell` |
 
 ## Inner loop
 
 0. **Triage.** One decision: implement, spec, duplicate, needs-info, decline.
-1. **Spec,** when triage says so. A human approves before code starts.
-2. **Isolate.** A fresh worktree and branch from `origin/main`. Never build
+1. **Aim.** Raise the target before building: the goal beyond the goal, the
+   standard the field's best would hold, and an outside judge named up
+   front. Take the highest rung the triaged size allows; file the rungs
+   above as issues. Better, not bigger.
+2. **Spec,** when triage or the aim says so. A human approves before code
+   starts.
+3. **Isolate.** A fresh worktree and branch from `origin/main`. Never build
    on `main`.
-3. **Build.** Boundaries decide why and when; services do the how.
-4. **Prove.** Capture the before state while reproducing, the after once it
-   works. Scale proof to the change.
-5. **Ship.** PR with before/after proof in the body, then `code-review-loop`
-   until Greptile reports 5/5 with zero unresolved comments.
-6. **Monitor.** Check the merge commit; a regression becomes a new issue.
+4. **Build.** Boundaries decide why and when; services do the how.
+5. **Prove.** Capture the before state while reproducing, the after once it
+   works, measured by the aim's judge. Scale proof to the change; report a
+   missed target with its numbers.
+6. **Ship.** PR with the aim and before/after proof in the body, then
+   `code-review-loop` until Greptile reports 5/5 with zero unresolved
+   comments.
+7. **Monitor.** Check the merge commit; a regression becomes a new issue.
 
 Beats switched off in `.factory/config.json` are skipped.
 
@@ -50,8 +58,8 @@ Beats switched off in `.factory/config.json` are skipped.
 
 ## Human gates
 
-Spec approval, merge, and every outer-loop PR (skill, memory graduation,
-routing change) wait for a person. Record each approval or correction as a
+Spec approval, an aim that replaces what was asked, merge, and every
+outer-loop PR (skill, memory graduation, routing change) wait for a person. Record each approval or correction as a
 touch in the ledger.
 
 ## Rules
@@ -74,16 +82,17 @@ touch in the ledger.
 1. Run the repo's checks (listed below).
 2. Assemble before/after evidence; note memories used and written.
 3. Commit, rebase onto `origin/main`, rerun the checks, push.
-4. Open the PR: what changed, evidence for every claim, risks, and the
-   `Run:` line from the ledger.
+4. Open the PR: what changed, the aim (rung, target, judge), evidence for
+   every claim, risks, and the `Run:` line from the ledger.
 5. `code-review-loop` to 5/5, zero unresolved. Finish the run record.
 6. Present the PR URL. Do not merge unless told to. Keep the worktree until
    the PR is merged or closed.
 
 ## Repo-specific
 
-Fill these in when dropping this file into a project (`factory-setup`
-appends the same section to an existing `AGENTS.md`):
+Fill these in for the project. `factory-setup` writes everything above
+this heading as a marked block and keeps it current on upgrade; this
+section is the repo's and is never rewritten:
 
 - **Commands:** install, dev, test, typecheck, lint, exactly as typed.
 - **Invariants:** what must never happen, one line each.

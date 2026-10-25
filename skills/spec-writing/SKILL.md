@@ -14,7 +14,7 @@ compatibility: >
   .factory/.
 metadata:
   author: software-factory
-  version: "1.0"
+  version: "1.1"
   signals: "[misread-intent]"
 allowed-tools: Bash(git:*) Bash(gh pr *) Bash(gh issue *) Bash(node:*)
 ---
@@ -50,8 +50,11 @@ headings.
 1. **Read the issue, the relevant code, and memory.** Search `agent-memory`
    for decisions already made in this area. A spec that contradicts a
    recorded decision without saying so will be rejected.
-2. **Write the product spec first.** Its acceptance checks are what
-   `test-evidence` will prove later, so write each one as something a
+2. **Write the product spec first,** opening with the aim from
+   `ambition-engine`: the goal beyond the goal, the rung this spec covers,
+   the hard target, and the judge. The judge becomes the first acceptance
+   check. Rungs above the aim are non-goals with an issue link. The
+   acceptance checks are what `test-evidence` will prove later, so write each one as something a
    reviewer can check: "Saving with an empty title shows 'Title is required'
    and keeps the form contents", not "validation works".
 3. **Write the tech spec against the product spec.** Every acceptance check

@@ -16,7 +16,7 @@ compatibility: >
   running app and a scriptable browser. Attaching evidence to a PR needs gh.
 metadata:
   author: software-factory
-  version: "3.0"
+  version: "3.1"
   signals: "[false-done, missing-evidence]"
 allowed-tools: Bash(python*) Bash(ffmpeg*) Bash(ffprobe*) Bash(gh pr*) Bash(gh issue*) Bash(npx playwright*) Bash(node:*)
 ---
@@ -48,6 +48,10 @@ Two rules apply to every row.
 reproduces. That state is free to record right now and expensive to reconstruct
 later, once your fix is in the working tree and showing the old behavior means
 stashing everything.
+
+**Measure against the aim.** When `ambition-engine` set a judge and a target,
+the evidence is the judge's result against that target, in real numbers. A
+miss with numbers is a result; moving the target to fit is a false done.
 
 **Vary one thing.** Before and after must differ only by your change. A
 screenshot at a different window width, or a benchmark on a loaded machine,

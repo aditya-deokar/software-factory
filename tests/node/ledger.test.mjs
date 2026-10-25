@@ -137,3 +137,19 @@ test("harness detection reads the environment", () => {
   assert.equal(detectHarness({ FACTORY_HARNESS: "cursor", CLAUDECODE: "1" }), "cursor");
   assert.equal(detectHarness({}), "unknown");
 });
+
+test("the aim beat records the rung, judge, and follow-ups, and rejects unknown types", () => {
+  const repo = tempRepo("agent/aim");
+  const L = (...a) => run(LEDGER, a, { cwd: repo, env: noTranscripts() });
+  const id = L("start", "--class", "bugfix", "--size", "medium").out.trim();
+  const ok = L("beat", "current", "aim", "--set", "rung=2", "--set", "rungs=3", "--add", "types=altitude", "--add", "types=depth",
+    "--set", "judge=repro test, then crash rate", "--add", "follow_ups=github:issue/141");
+  assert.equal(ok.code, 0, ok.err);
+  assert.equal(L("touch", "current", "--beat", "aim", "--kind", "correction", "--note", "aim higher").code, 0);
+  const rec = JSON.parse(readFileSync(join(repo, ".factory", "runs", `${id}.json`), "utf8"));
+  assert.deepEqual(rec.beats.aim, { rung: 2, rungs: 3, types: ["altitude", "depth"], judge: "repro test, then crash rate", follow_ups: ["github:issue/141"] });
+  assert.equal(rec.human_touches[0].beat, "aim");
+
+  const bad = L("beat", "current", "aim", "--add", "types=speed");
+  assert.notEqual(bad.code, 0, "speed is not a type the aim records");
+});

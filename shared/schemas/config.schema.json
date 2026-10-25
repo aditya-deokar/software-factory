@@ -12,6 +12,7 @@
       "additionalProperties": false,
       "properties": {
         "triage": { "type": "boolean" },
+        "aim": { "type": "boolean" },
         "spec": { "type": "boolean" },
         "monitor": { "type": "boolean" }
       }
@@ -19,6 +20,10 @@
     "ledger": { "type": "boolean" },
     "memory": { "type": "boolean" },
     "routing": { "type": "boolean" },
+    "agents_md": {
+      "description": "How the plugin's session-start hook treats the marked factory block in AGENTS.md: auto updates it, notify only says it is out of date, off skips the check.",
+      "enum": ["auto", "notify", "off"]
+    },
     "loop": {
       "type": "object",
       "additionalProperties": false,

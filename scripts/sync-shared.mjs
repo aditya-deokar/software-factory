@@ -31,10 +31,10 @@ export const TARGETS = {
   },
   "skills/model-routing/scripts": { lib: ["factory", "schema", "transcripts", "frontmatter"], schemas: ["routing"] },
   "skills/factory-setup/scripts": {
-    lib: ["factory", "frontmatter", "schema", "secrets"],
+    lib: ["factory", "frontmatter", "schema", "secrets", "agents-md"],
     schemas: ALL_SCHEMAS,
   },
-  hooks: { lib: ["factory"], schemas: [] },
+  hooks: { lib: ["factory", "agents-md"], schemas: [] },
 };
 
 // Data files copied verbatim: [source, destination].
@@ -60,6 +60,10 @@ function expected() {
     }
   }
   for (const [src, dest] of COPIES) files.set(dest, readFileSync(join(ROOT, src), "utf8"));
+  // The version stamped into a repo's AGENTS.md block. Skills install without
+  // package.json, so factory-setup carries its own copy.
+  const { version } = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
+  files.set("skills/factory-setup/assets/VERSION", `${version}\n`);
   return files;
 }
 

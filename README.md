@@ -1,22 +1,22 @@
 <div align="center">
 
-# Software Factory
+<h1><img src="assets/banner.png" alt="Software Factory, by Aditya Deokar" width="100%" /></h1>
 
 **A self-improving software factory for coding agents.**
 
-Eighteen skills that take work from a new issue to a monitored merge with evidence attached, plus an outer loop that measures every run, remembers what agents learn, and proposes its own skill fixes as reviewed PRs.
+Nineteen skills that take work from a new issue to a monitored merge with evidence attached, aim each task higher than it was typed, plus an outer loop that measures every run, remembers what agents learn, and proposes its own skill fixes as reviewed PRs.
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@software-factory/skills"><img src="https://img.shields.io/npm/v/@software-factory/skills?style=flat-square&color=black" alt="npm version" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License: MIT" /></a>
-  <a href="skills/"><img src="https://img.shields.io/badge/skills.sh-18%20skills-black?style=flat-square&logo=gnubash&logoColor=white" alt="18 skills" /></a>
+  <a href="skills/"><img src="https://img.shields.io/badge/skills.sh-19%20skills-black?style=flat-square&logo=gnubash&logoColor=white" alt="19 skills" /></a>
   <a href="AGENTS.md"><img src="https://img.shields.io/badge/workflow-AGENTS.md-22c55e?style=flat-square" alt="Workflow: AGENTS.md" /></a>
   <a href="https://github.com/vercel-labs/skills#supported-agents"><img src="https://img.shields.io/badge/agents-80%2B%20supported-6366f1?style=flat-square" alt="Supported Agents" /></a>
 </p>
 
 <p align="center">
   <a href="#the-factory">The factory</a> &bull;
-  <a href="#all-eighteen-skills">All eighteen skills</a> &bull;
+  <a href="#all-nineteen-skills">All nineteen skills</a> &bull;
   <a href="#install">Install</a> &bull;
   <a href="#why-this-exists">Why this exists</a> &bull;
   <a href="#documentation">Documentation</a>
@@ -26,10 +26,11 @@ Eighteen skills that take work from a new issue to a monitored merge with eviden
 
 ```text
  INNER LOOP (every task)
- triage ─► spec ─► isolate ─► build ─► prove ─► ship ─► monitor ─┐
-   ▲      (human    worktree   service  evidence  5/5     regress-│
-   │      approves)            layer    before/   Greptile ions   │
-   └──────────────────── new issues ◄───────────────────────────┘
+ triage ─► aim ─► spec ─► isolate ─► build ─► prove ─► ship ─► monitor ──┐
+   ▲      raise   (human   worktree   service  against  5/5     regress- │
+   │      target, approves)           layer    the aim's Greptile ions   │
+   │      judge                                judge                     │
+   └──────────── new issues, including the rungs above this PR ◄─────────┘
                           │ every run writes .factory/
  OUTER LOOP               ▼
  run ledger · memory · routing · friction ─► one reviewed PR per skill fix
@@ -66,10 +67,11 @@ skills, or run `factory-setup` to do it for you.
 | Beat | Skill | What you get |
 |---|---|---|
 | Triage | `issue-triage` | One decision per issue: implement, spec, duplicate, needs-info, decline |
+| Aim | `ambition-engine` | The goal beyond the goal, the rung this PR takes, and an outside judge named before code. Higher rungs become issues. |
 | Spec | `spec-writing` | Product and tech spec, approved by a person before code starts |
 | Isolate | `worktree-isolation` | A worktree and branch per task. Parallel agents stop colliding. |
 | Build | `service-layer` | Boundaries own the why, services own the how. One fix propagates everywhere. |
-| Prove | `test-evidence` | The before state and the after, as an artifact. Done with proof, or BLOCKED. |
+| Prove | `test-evidence` | The before state and the after, measured by the aim's judge. Done with proof, or BLOCKED. |
 | Ship | `visual-diff`, `code-review-loop` | Before/after table in the PR, iterated to a clean review. |
 | Monitor | `release-monitoring` | The merge commit checked; a regression becomes a new issue. |
 
@@ -84,7 +86,7 @@ The outer loop runs on data in `.factory/`, committed to git:
 
 `prose-cleanup` runs across everything a person will read, at every beat.
 
-## All eighteen skills
+## All nineteen skills
 
 ### Lifecycle
 
@@ -92,6 +94,14 @@ The outer loop runs on data in `.factory/`, committed to git:
   before anyone writes code. Searches memory and closed issues for duplicates,
   asks reporters for specific missing facts instead of "more details", and
   labels the issue with the reason.
+
+- **[ambition-engine](skills/ambition-engine/SKILL.md)** - Raises a task's
+  target before anyone builds it, using Felix Rieseberg's types of ambition:
+  Altitude (the goal beyond the goal, as a three-rung ladder), Depth (the
+  standard the field's best would hold, from raw data), and Range (methods
+  from other fields, done, not role-played). The PR takes one rung with an
+  outside judge named up front; the rungs above it become issues. Better,
+  not bigger.
 
 - **[spec-writing](skills/spec-writing/SKILL.md)** - Product spec (invariants,
   behavior, testable acceptance checks) and tech spec (boundary and service
@@ -220,10 +230,10 @@ npm install --save-dev @software-factory/skills
 npx skills add ./node_modules/@software-factory/skills
 ```
 
-As a Claude Code plugin, which adds three hooks (memory loaded at session
-start, pushes to `main` and plain force-pushes blocked, unfinished run records
-caught) and the `/triage`, `/spec`, `/factory-loop`, `/factory-report`, and
-`/sidecar` commands:
+As a Claude Code plugin, which adds three hooks (memory loaded and the
+`AGENTS.md` factory block kept current at session start, pushes to `main` and
+plain force-pushes blocked, unfinished run records caught) and the `/triage`,
+`/aim`, `/spec`, `/factory-loop`, `/factory-report`, and `/sidecar` commands:
 
 ```bash
 /plugin marketplace add aditya-deokar/software-factory
@@ -235,6 +245,27 @@ Then, in each repo that should run the factory:
 ```bash
 node <skills dir>/factory-setup/scripts/setup.mjs --dry-run   # or ask the agent to "set up the factory"
 ```
+
+### Keeping AGENTS.md current
+
+`factory-setup` writes its part of `AGENTS.md` between two markers and
+replaces only that block on later runs. Your repo-specific section and
+anything else in the file stay as they are, and a block someone edited by
+hand is reported, not overwritten. How it stays current depends on the
+install:
+
+- **Claude Code plugin:** automatic. The session-start hook updates the
+  block in any repo with `.factory/`.
+- **npm:** automatic with one line in the project's `package.json`:
+  `"prepare": "node node_modules/@software-factory/skills/skills/factory-setup/scripts/setup.mjs --agents-only"`.
+- **`npx skills add`:** the skills CLI runs no install hooks, so run this
+  after every `npx skills add` or `npx skills update`:
+
+  ```bash
+  node "$(ls -d .agents/skills/factory-setup .claude/skills/factory-setup ~/.agents/skills/factory-setup ~/.claude/skills/factory-setup 2>/dev/null | head -1)/scripts/setup.mjs" --agents-only
+  ```
+
+  Or ask the agent to "sync the factory section of AGENTS.md".
 
 Full walkthrough in [docs/USAGE.md](docs/USAGE.md). Coming from v2: nothing was
 renamed, so installs keep working; see [docs/MIGRATION-v3.md](docs/MIGRATION-v3.md).
@@ -252,6 +283,7 @@ npx skills use aditya-deokar/software-factory@prose-cleanup | claude
 | [docs/V3-PLAN.md](docs/V3-PLAN.md) | The v3 plan: from one task per PR to a self-improving factory, phase by phase. |
 | [docs/MIGRATION-v3.md](docs/MIGRATION-v3.md) | Moving a repo from the v2 workflow to v3. |
 | [docs/adr/0001-v3-factory.md](docs/adr/0001-v3-factory.md) | The v3 design decisions and the defaults chosen. |
+| [docs/adr/0002-aim-beat-and-agents-sync.md](docs/adr/0002-aim-beat-and-agents-sync.md) | Why Aim sits between triage and spec, and how `AGENTS.md` upgrades itself. |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | The publishing plan. Six phases from empty repo to a listed, versioned package. |
 | [docs/USAGE.md](docs/USAGE.md) | How to use these skills in a real project, with worked examples. |
 | [docs/BENEFITS.md](docs/BENEFITS.md) | What each skill is worth, and where the value does not show up. |
@@ -276,7 +308,7 @@ broken skill cannot reach npm.
 
 ## Licensing
 
-Fourteen skills are original work under the root MIT license, which also covers
+Fifteen skills are original work under the root MIT license, which also covers
 the packaging, `scripts/`, the hooks, and the docs. Four are vendored and keep their upstream
 licenses in their own folders: `code-review-loop` and `code-review-loop-large` (MIT, Greptile),
 `prose-cleanup` (MIT, Cursor), and `visual-diff` (PolyForm Shield 1.0.0, Vercel
@@ -294,4 +326,8 @@ from [cursor](https://github.com/cursor/plugins). The subject matter of
 [michaelshimeles/skills](https://github.com/michaelshimeles/skills); the skills
 here were written from scratch. v3's outer loop borrows ideas, not text, from
 [BuilderIO/agent-native](https://github.com/BuilderIO/agent-native) and Warp's
-talks on self-improving software factories; see [NOTICE.md](NOTICE.md).
+talks on self-improving software factories. `ambition-engine` puts Felix
+Rieseberg's [How to be more ambitious: a tutorial for humans with models](https://felixrieseberg.com/how-to-be-more-ambitious-a-tutorial-for-humans-with-models/)
+to work in the inner loop, and was prompted by RoboNuggets'
+[be-ambitious](https://github.com/robonuggets/be-ambitious) skill. See
+[NOTICE.md](NOTICE.md).

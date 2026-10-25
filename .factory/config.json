@@ -2,12 +2,14 @@
   "schema": 1,
   "beats": {
     "triage": true,
+    "aim": true,
     "spec": true,
     "monitor": true
   },
   "ledger": true,
   "memory": true,
   "routing": true,
+  "agents_md": "auto",
   "loop": {
     "enabled": true,
     "window": "14d",

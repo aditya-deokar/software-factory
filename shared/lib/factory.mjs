@@ -5,7 +5,7 @@ import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 
-export const BEATS = ["triage", "spec", "isolate", "build", "prove", "ship", "monitor"];
+export const BEATS = ["triage", "aim", "spec", "isolate", "build", "prove", "ship", "monitor"];
 
 function git(args, cwd) {
   try {

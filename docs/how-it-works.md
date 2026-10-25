@@ -2,13 +2,13 @@
 
 Complete technical explanation of this repo, as of v3. Companion to `video-script.md`, which is the spoken v2 version. This file is the reference version: what each part does, how parts connect, and where to look in code.
 
-Source of truth: `AGENTS.md` plus the eighteen skills under `skills/`. The design decisions behind v3 are in `docs/adr/0001-v3-factory.md`, and the plan it was built from is `docs/V3-PLAN.md`.
+Source of truth: `AGENTS.md` plus the nineteen skills under `skills/`. The design decisions behind v3 are in `docs/adr/0001-v3-factory.md`, and the plan it was built from is `docs/V3-PLAN.md`.
 
 ---
 
 ## 1. The idea in one paragraph
 
-An agent that says "done and tested" gives you a claim you cannot check. The factory replaces each claim with an artifact: an isolated branch that cannot collide, code placed so one fix lands everywhere, a recording or measurement that shows the behavior, a before/after table in the PR, and a 5/5 review score before merge. That is the inner loop, and v3 wraps it on both sides: triage and specs before it, monitoring after it. v3 also adds an outer loop that watches the inner one. Every run is recorded, facts agents learn are kept, work is routed to the cheapest model that does it well, and repeated human corrections turn into a reviewed PR against the skill that failed. `AGENTS.md` sets the order. Skills supply the how. `.factory/` holds the data.
+An agent that says "done and tested" gives you a claim you cannot check. The factory replaces each claim with an artifact: an isolated branch that cannot collide, code placed so one fix lands everywhere, a recording or measurement that shows the behavior, a before/after table in the PR, and a 5/5 review score before merge. That is the inner loop, and v3 wraps it on both sides: triage, an aim, and specs before it, monitoring after it. v3 also adds an outer loop that watches the inner one. Every run is recorded, facts agents learn are kept, work is routed to the cheapest model that does it well, and repeated human corrections turn into a reviewed PR against the skill that failed. `AGENTS.md` sets the order. Skills supply the how. `.factory/` holds the data.
 
 It is model agnostic and harness agnostic. It works with Claude Code, Cursor, Codex, Copilot, OpenCode, Windsurf, and others because it is workflow, markdown, and dependency-free Node scripts, not a product. The Claude Code plugin adds hooks on top, and nothing depends on them.
 
@@ -20,14 +20,15 @@ It is model agnostic and harness agnostic. It works with Claude Code, Cursor, Co
 AGENTS.md                          <- the controller, copy into any repo (or run factory-setup)
 skills/
   issue-triage/                    <- Beat 0: Triage
-  spec-writing/                    <- Beat 1: Spec (product + tech templates in references/)
-  worktree-isolation/              <- Beat 2: Isolate
-  service-layer/                   <- Beat 3: Build
-  test-evidence/                   <- Beat 4: Prove (scripts/record.py)
-  visual-diff/                     <- Beat 5a: Ship (before/after)
-  code-review-loop/                <- Beat 5b: Ship (Greptile to 5/5)
-  code-review-loop-large/          <- Beat 5b variant for huge PRs
-  release-monitoring/              <- Beat 6: Monitor
+  ambition-engine/                 <- Beat 1: Aim (ladders for common tasks in references/)
+  spec-writing/                    <- Beat 2: Spec (product + tech templates in references/)
+  worktree-isolation/              <- Beat 3: Isolate
+  service-layer/                   <- Beat 4: Build
+  test-evidence/                   <- Beat 5: Prove (scripts/record.py)
+  visual-diff/                     <- Beat 6a: Ship (before/after)
+  code-review-loop/                <- Beat 6b: Ship (Greptile to 5/5)
+  code-review-loop-large/          <- Beat 6b variant for huge PRs
+  release-monitoring/              <- Beat 7: Monitor
   run-ledger/scripts/ledger.mjs    <- outer loop: one record per task
   agent-memory/scripts/memory.mjs  <- outer loop: facts with provenance
   model-routing/scripts/route*.mjs <- outer loop: tiers and best-of-k evals
@@ -37,7 +38,7 @@ skills/
   skill-authoring/, package-release/, cross-platform-shell/   <- meta
 shared/                            <- lib/ and schemas/ copied into skills by scripts/sync-shared.mjs
 hooks/                             <- Claude Code plugin hooks
-commands/                          <- /triage, /spec, /factory-loop, /factory-report, /sidecar
+commands/                          <- /triage, /aim, /spec, /factory-loop, /factory-report, /sidecar
 .claude-plugin/, .codex-plugin/    <- plugin manifests
 .factory/                          <- this repo's own factory data (it runs itself)
 scripts/                           <- lint-skills, check-package, sync-shared, run-node-tests
@@ -53,13 +54,13 @@ Install entry: `npx skills add aditya-deokar/software-factory`, or the Claude Co
 `AGENTS.md` is under 6,000 characters on purpose (the linter enforces it), because it is loaded on every task. Its order:
 
 1. **Skills index**, second on the page, so an agent that reads nothing else still knows which skill covers which moment. The linter fails if a skill is missing from it.
-2. **Inner loop**, beats 0 to 6: triage, spec (when triage says so, approved by a person), isolate, build, prove, ship, monitor.
+2. **Inner loop**, beats 0 to 7: triage, aim, spec (when triage or the aim says so, approved by a person), isolate, build, prove, ship, monitor.
 3. **Outer loop**: remember, route, record, improve.
-4. **Human gates**: spec approval, merge, and every outer-loop PR.
+4. **Human gates**: spec approval, an aim that replaces what was asked, merge, and every outer-loop PR.
 5. **Rules**: one worktree per task, scope check, no plain `--force`, regenerate lockfiles and the memory index on conflict, keep changes to the task, `prose-cleanup` on text, and every report ends as Done with its artifact or `BLOCKED: <what> - unblock: <one action>`.
 6. **Completing a task**, then a **repo-specific** section to fill in.
 
-`factory-setup` writes this file into a repo that has none, or appends a marked, shorter section to one that does.
+`factory-setup` writes this file into a repo that has none, or appends a shorter section to one that does. Either way the factory's part sits between versioned markers, and later runs replace only that block, so a repo picks up a new workflow without losing its own rules. A block edited by hand is reported instead of overwritten. The plugin's session-start hook runs the same update automatically; `npx skills add` has no install hook, so there it is one command (`setup.mjs --agents-only`).
 
 ---
 
@@ -69,35 +70,39 @@ Install entry: `npx skills add aditya-deokar/software-factory`, or the Claude Co
 flowchart TD
     IN[Issue, message, or regression] --> TR[0. Triage: one decision]
     TR -->|duplicate / decline / needs-info| CLOSE[Label, comment, stop]
-    TR -->|spec| SP[1. Spec: product + tech]
+    TR -->|implement or spec| AIM[1. Aim: goal beyond the goal, rung, judge]
+    AIM -->|rungs above this PR| IN
+    AIM -->|triage said spec, or the rung outgrew implement| SP[2. Spec: product + tech, opens with the aim]
     SP -->|human approves| ISO
-    TR -->|implement| ISO[2. Isolate: worktree off origin/main]
-    ISO --> BUILD[3. Build: service-layer split]
-    BUILD --> PROVE[4. Prove: before + after artifacts]
+    AIM -->|implement| ISO[3. Isolate: worktree off origin/main]
+    ISO --> BUILD[4. Build: service-layer split]
+    BUILD --> PROVE[5. Prove: before + after, measured by the judge]
     PROVE -->|no proof| BUILD
-    PROVE --> PR[5. Ship: PR with proof, run id, memories]
+    PROVE --> PR[6. Ship: PR with aim, proof, run id, memories]
     PR --> REV[code-review-loop: Greptile]
     REV -->|below 5/5| BUILD
     REV -->|5/5, zero open| MERGE[Human merges]
-    MERGE --> MON[6. Monitor: merge commit, deploy, errors]
+    MERGE --> MON[7. Monitor: merge commit, deploy, errors]
     MON -->|regression| IN
 
     ISO -. start run .-> L[(.factory/runs)]
     PROVE -. evidence .-> L
     REV -. rounds, corrections .-> L
     TR -. search .-> M[(.factory/memory)]
+    AIM -. aim beat .-> L
     BUILD -. search, save .-> M
     L --> LOOP[skill-feedback-loop]
     M --> LOOP
     LOOP -->|one reviewed PR| SKILLS[Skill text]
 ```
 
-The inner loops are the same as v2: Prove loops back to Build when evidence shows the fix did not land, and Ship loops back when Greptile scores below 5/5. v3 adds the outer arrow: every run writes data, and the loop turns that data into skill changes that a person reviews.
+Aim sends two things forward: the judge, which Prove has to satisfy, and the rungs above this PR, which go back to intake as new issues instead of growing the diff. The inner loops are the same as v2: Prove loops back to Build when evidence shows the fix did not land, and Ship loops back when Greptile scores below 5/5. v3 adds the outer arrow: every run writes data, and the loop turns that data into skill changes that a person reviews.
 
 Claim to artifact mapping:
 
 | Claim | Artifact | Produced by |
 |---|---|---|
+| I aimed at the right thing | The aim block: rung, target, and judge, named before code | `ambition-engine` |
 | I tested it | Recording with annotations, or before/after output | `test-evidence` |
 | The UI looks right | Before/After table in PR body | `visual-diff` |
 | It is clean code | 5/5 Greptile, zero unresolved comments | `code-review-loop` |
@@ -108,7 +113,7 @@ Claim to artifact mapping:
 ---
 
 
-## 5. Beat 2: Isolate
+## 5. Beat 3: Isolate
 
 Skill: `skills/worktree-isolation/SKILL.md`.
 
@@ -179,7 +184,7 @@ Cost is about 30 seconds per task. Value is parallel agents without collision. S
 
 ---
 
-## 6. Beat 3: Build
+## 6. Beat 4: Build
 
 Skill: `skills/service-layer/SKILL.md`.
 
@@ -227,7 +232,7 @@ Skip on prototypes, one-off scripts, and flows about to be deleted. Structure is
 
 ---
 
-## 7. Beat 4: Prove
+## 7. Beat 5: Prove
 
 Skill: `skills/test-evidence/SKILL.md`. Recorder: `skills/test-evidence/scripts/record.py`.
 
@@ -305,7 +310,7 @@ Video cannot upload via `gh`. Drag `evidence.mp4` into the browser comment box. 
 
 ---
 
-## 8. Beat 5: Ship
+## 8. Beat 6: Ship
 
 Two skills in order: `visual-diff` then `code-review-loop`.
 
@@ -365,11 +370,13 @@ Both need Greptile installed on the repo. Without it they have nothing to talk t
 
 ---
 
-## 9. Triage, spec, and monitor
+## 9. Triage, aim, spec, and monitor
 
-These three beats wrap the v2 core.
+These four beats wrap the v2 core.
 
 **Triage** (`skills/issue-triage/SKILL.md`) makes exactly one decision per incoming item: `implement`, `spec`, `duplicate`, `needs-info`, or `decline`. It searches memory and closed issues first, because two reporters describe one bug differently but paste the same error. `needs-info` asks for at most three specific facts, each with the reason it matters. The decision goes on the issue as a `factory:*` label plus one comment, and into the run record. Default tier: `fast`.
+
+**Aim** (`skills/ambition-engine/SKILL.md`) raises the target before anything is built, using Felix Rieseberg's [types of ambition](https://felixrieseberg.com/how-to-be-more-ambitious-a-tutorial-for-humans-with-models/). Altitude finds the goal beyond the goal and builds a three-rung ladder: the instance done properly, the whole class of problem fixed at the cause, then a durable workflow that keeps it from coming back. Depth holds the chosen rung to the standard the field's best would hold: raw material over summaries, their instruments over their vocabulary, a hard target treated as reasonable, and an outside judge named before code. Range brings in other fields, and has them do the field's work instead of talking like it. The PR takes the highest rung that fits triage's size and has a judge you can run now. The rungs above it become issues. A rung that outgrows `implement` re-routes to spec, and one that replaces what was asked waits for a person. The aim goes on the issue, the spec, and the PR body, and into the ledger as the `aim` beat. Two friction keys pull in opposite directions, `aimed-low` (owned here) and `unrequested-scope` (owned by `AGENTS.md`), so the outer loop can tune the skill either way. Default tier: `frontier`, `balanced` for small tasks.
 
 **Spec** (`skills/spec-writing/SKILL.md`) writes a product spec (problem, invariants, behavior, non-goals, acceptance checks that `test-evidence` can prove) and a tech spec (current and proposed shape in boundary/service terms, files touched, data and migration, risks, rollout). Open questions go at the top with a recommended answer each. The spec is a PR under `specs/`; code waits until a person approves it, and the approval is a `touch` in the ledger. Default tier: `frontier`.
 
@@ -383,7 +390,7 @@ Everything lives in `.factory/`, committed to git, so every change to it is revi
 
 ```text
 .factory/
-  config.json               switches per beat and loop; all off = v2 behavior
+  config.json               switches per beat and loop (all off = v2 behavior), agents_md hook mode
   runs/<id>.json            one per task (run-ledger)
   memory/<name>.md          one per fact, plus generated INDEX.md (agent-memory)
   routing.json              rules to tiers, tiers to models per harness (model-routing)
@@ -411,7 +418,7 @@ Where a rule kept failing as prose, v3 replaces it with something that runs.
 
 | Mechanism | Replaces the rule | Where |
 |---|---|---|
-| `session-start.mjs` hook | "Read the memory index at task start" | `hooks/` |
+| `session-start.mjs` hook | "Read the memory index at task start" and "Update AGENTS.md after upgrading" | `hooks/` |
 | `guard-push.mjs` hook | "Never push to main; no plain `--force`" | `hooks/` |
 | `stop-ledger.mjs` hook | "Finish the run record" (only after the ship beat) | `hooks/` |
 | AGENTS.md budget and index check | "Keep AGENTS.md small and complete" | `scripts/lint-skills.mjs` |

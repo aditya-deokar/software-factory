@@ -3,6 +3,46 @@
 Grouped by skill, per `package-release`. Package versions track the bundle;
 each skill's `metadata.version` says whether that one skill changed.
 
+## 3.1.0 (unreleased)
+
+Adds an Aim beat between triage and spec, and keeps each repo's `AGENTS.md`
+factory section current on upgrade. Nothing was renamed or removed.
+
+### Added
+
+- `ambition-engine` 1.0: raises a task's target before building, using Felix
+  Rieseberg's Altitude, Depth, and Range. Writes the aim (goal beyond the
+  goal, the rung this PR takes, a hard target, an outside judge), files the
+  rungs above it as issues, and owns the new `aimed-low` friction key.
+- `/aim` command for the Claude Code plugin.
+- Ledger beat `aim` (rung, types, goal, target, judge, follow-ups) and touches
+  on it. Config switch `beats.aim`. Routing rules `aim-small` (balanced) and
+  `aim` (frontier).
+
+### Changed
+
+- `AGENTS.md`: eight beats, with Aim as beat 1. The PR body carries the aim,
+  and an aim that replaces what was asked is a human gate. 4,765 characters.
+- `factory-setup` 1.1: the `AGENTS.md` section now sits between versioned
+  markers with a digest. Every run replaces the block when the templates
+  changed, never touches text outside it, and reports a hand-edited block
+  instead of overwriting it (`--replace-edited` to take the new one).
+  Unedited v3.0.0 sections are upgraded in place. New `--agents-only`.
+- Plugin session-start hook: updates an outdated, unedited block in repos
+  with `.factory/`; `agents_md` in `config.json` (`auto`, `notify`, `off`).
+- `issue-triage` 1.1, `spec-writing` 1.1, `test-evidence` 3.1, `run-ledger`
+  1.2: hand off to the aim, open the spec with it, and measure evidence
+  against its judge.
+
+### Upgrading
+
+Existing `.factory/` files are never rewritten, so a repo set up on 3.0.0
+keeps its `config.json` and `routing.json`. The aim beat runs anyway (a
+missing `beats.aim` means on) and uses the default tier until you copy the
+two `aim` rules from `skills/factory-setup/assets/factory/routing.json`.
+`AGENTS.md` upgrades by itself under the plugin, or with
+`setup.mjs --agents-only`.
+
 ## 3.0.0 (unreleased)
 
 v3 turns the four-beat workflow into a self-improving software factory: an

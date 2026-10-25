@@ -127,7 +127,7 @@ The 31 patterns are specific enough to be checkable rather than aspirational.
 why is my skill not firing? Nearly always the description, because the agent
 never reads the body until the description convinces it to.
 
-Directly relevant to you now that you maintain an eighteen-skill package.
+Directly relevant to you now that you maintain a nineteen-skill package.
 
 ### package-release
 
@@ -238,7 +238,7 @@ ability to pin a working version when a change breaks something.
 run on every push. A skill with broken YAML is invisible to the agent with no
 error message anywhere. That failure mode is why the linter exists.
 
-**A public artifact.** An eighteen-skill package with CI, licensing done properly,
+**A public artifact.** A nineteen-skill package with CI, licensing done properly,
 and real documentation is a better demonstration of how you work than a resume
 bullet. It shows an opinion about how software gets shipped, backed by tooling.
 

@@ -13,6 +13,12 @@ Issue: #<n> · Status: draft | approved · Author: <agent/run id>
 1. <Question>? Recommended: <answer>, because <one line>.
 2. ...
 
+## Aim
+
+From `ambition-engine`. Goal beyond the goal: <line>. Rung: <n> of <m>,
+<one line>. Target: <hard, specific>. Judge: <the outside check>. Rungs
+above this spec: #<issue>.
+
 ## Problem
 
 Who hits this, in what situation, and what it costs them today. Two to four
@@ -37,6 +43,7 @@ unhappy paths: empty states, errors, permission denied, slow network.
 ## Non-goals
 
 What this deliberately does not do, so review does not drift into it.
+The rungs above the aim go here, each with its issue link.
 
 ## Acceptance checks
 

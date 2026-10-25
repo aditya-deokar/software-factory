@@ -28,6 +28,7 @@ Update this file whenever a skill is added or its provenance changes.
 | `skill-feedback-loop` | written for this repository (v3) | MIT | root `LICENSE` |
 | `model-routing` | written for this repository (v3) | MIT | root `LICENSE` |
 | `factory-setup` | written for this repository (v3) | MIT | root `LICENSE` |
+| `ambition-engine` | written for this repository (v3.1), from ideas in Felix Rieseberg's article | MIT | root `LICENSE` |
 
 ## On the three rewritten skills
 
@@ -66,6 +67,24 @@ none of it ships in the package.
   lifecycle loop from intake to monitoring, human checkpoints, the outer-loop
   agent that rewrites skills through reviewed PRs, persistent memory with
   provenance, and eval-driven model routing.
+
+## On `ambition-engine`
+
+The method is Felix Rieseberg's, from [How to be more ambitious: a tutorial
+for humans with models](https://felixrieseberg.com/how-to-be-more-ambitious-a-tutorial-for-humans-with-models/)
+(13 Oct 2026): the four types of ambition, the rung ladder, the "deeper, not
+bigger" prompt, and the warnings about self-grading and role play. The skill
+quotes that prompt once, with attribution, and cites the research and
+examples the article cites.
+
+[robonuggets/be-ambitious](https://github.com/robonuggets/be-ambitious)
+(MIT) and the earlier [DannyMac180/skills](https://github.com/DannyMac180/skills/tree/main/be-ambitious)
+turned the same article into general-purpose skills, and prompted this one.
+`ambition-engine` follows be-ambitious's outline (hard rules, a fit table per
+type, the ladder, the Depth prompt, an output block) and reuses its
+login-crash example, but the text is new, written for this package's beats: it sits between triage and spec, hands its judge to
+`test-evidence`, files higher rungs as issues, records an `aim` beat in the
+run ledger, and owns the `aimed-low` friction key.
 
 ## PolyForm Shield and `visual-diff`
 
