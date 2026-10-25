@@ -1,6 +1,6 @@
 <div align="center">
 
-# Software Factory
+<h1><img src="assets/banner.png" alt="Software Factory, by Aditya Deokar" width="100%" /></h1>
 
 **A self-improving software factory for coding agents.**
 
