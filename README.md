@@ -24,6 +24,13 @@ Nineteen skills that take work from a new issue to a monitored merge with eviden
 
 </div>
 
+<p align="center">
+  <img src="assets/factory-loop.png" width="100%" alt="The factory loop. Inner loop, every task: 0 Triage (issue-triage), 1 Aim (ambition-engine), 2 Spec (spec-writing, human approves), 3 Isolate (worktree-isolation), 4 Build (service-layer), 5 Prove (test-evidence, against the judge set at Aim), 6 Ship (code-review-loop, human merges), 7 Monitor (release-monitoring). Regressions and higher rungs become new issues. Every run writes .factory/, which feeds the outer loop: Record (run-ledger), Remember (agent-memory), Route (model-routing), Improve (skill-feedback-loop), producing one reviewed PR per skill fix." />
+</p>
+
+<details>
+<summary>Text version</summary>
+
 ```text
  INNER LOOP (every task)
  triage ─► aim ─► spec ─► isolate ─► build ─► prove ─► ship ─► monitor ──┐
@@ -35,6 +42,8 @@ Nineteen skills that take work from a new issue to a monitored merge with eviden
  OUTER LOOP               ▼
  run ledger · memory · routing · friction ─► one reviewed PR per skill fix
 ```
+
+</details>
 
 ```bash
 npx skills add aditya-deokar/software-factory
