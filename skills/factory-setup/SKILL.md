@@ -6,8 +6,9 @@ description: >
   workflow section, and optional GitHub Actions for triage, the weekly
   improvement loop, and post-merge monitoring. Use when asked to "set up the
   factory", "install the workflow", or "bootstrap AGENTS.md" in a repo, when
-  a factory skill finds no .factory/ directory, or to validate an existing
-  .factory/ after editing it by hand.
+  a factory skill finds no .factory/ directory, after upgrading the factory
+  skills, when AGENTS.md has no software factory section or an outdated one,
+  or to validate an existing .factory/ after editing it by hand.
 license: MIT
 compatibility: >
   Node.js 18+, no dependencies, Linux, macOS, and Windows. The workflow
@@ -15,7 +16,7 @@ compatibility: >
   secret; everything else is local files.
 metadata:
   author: software-factory
-  version: "1.0"
+  version: "1.1"
 allowed-tools: Bash(node:*) Bash(git:*)
 ---
 
@@ -23,7 +24,8 @@ allowed-tools: Bash(node:*) Bash(git:*)
 
 The factory's skills work in any repo, but the outer loop needs somewhere to
 keep its data. This skill creates that place once and checks it afterwards.
-It never overwrites a file, so it is safe to rerun.
+It never overwrites a `.factory/` file, so it is safe to rerun. The one thing
+it updates in place is its own marked block in `AGENTS.md` (below).
 
 ## Find the scripts
 
@@ -53,11 +55,48 @@ What it creates, only where missing:
 | `.factory/friction-patterns.json` | The corrections the loop counts, each owned by a skill (`skill-feedback-loop`) |
 | `.factory/memory/INDEX.md` | The memory index (`agent-memory`) |
 | `.factory/runs/`, `proposals/`, `evals/` | Empty, filled by the ledger, the loop, and routing evals |
-| `AGENTS.md` | The full workflow if the repo has none; otherwise one appended section, marked so a rerun skips it |
+| `AGENTS.md` | The full workflow if the repo has none; otherwise one appended section. Either way it sits in a marked block that later runs keep current |
 | `.github/workflows/factory-*.yml` | Only with `--workflows`. See below. |
 
 Commit `.factory/` and `AGENTS.md`. The data plane is meant to live in git,
 so every change to it is reviewed.
+
+## Keeping AGENTS.md current
+
+The factory's part of `AGENTS.md` lives between two markers:
+
+```markdown
+<!-- software-factory:begin kind=section version=3.1.0 sha=... -->
+...the workflow, owned by the factory...
+<!-- software-factory:end -->
+
+### Repo-specific      <- yours, never rewritten
+```
+
+On every run, `setup.mjs` compares the block with the templates it ships and
+replaces it when they differ. Text outside the markers is never touched. The
+begin marker records a digest of what was written, so a block someone edited
+by hand is reported and left alone. Move those rules outside the block, then
+pass `--replace-edited`. A v3.0.0 section, which had a single marker, is
+upgraded the same way when it was never edited.
+
+To sync only `AGENTS.md`, after upgrading the skills:
+
+```bash
+node "$SKILL_DIR/scripts/setup.mjs" --agents-only --dry-run
+node "$SKILL_DIR/scripts/setup.mjs" --agents-only
+```
+
+What makes it automatic depends on how the skills were installed:
+
+| Install | AGENTS.md stays current by |
+|---|---|
+| Claude Code plugin | The session-start hook. In a repo with `.factory/`, it updates an unedited block and prints the command for an edited one. `.factory/config.json` `agents_md`: `auto` (default), `notify`, or `off`. It never adds a block to a repo that has none. |
+| npm package | A `prepare` script in the project, which runs after every install: `"prepare": "node node_modules/@software-factory/skills/skills/factory-setup/scripts/setup.mjs --agents-only"` |
+| `npx skills add` | Nothing: the skills CLI runs no install hooks. Run the `--agents-only` command above after `npx skills add` or `npx skills update`, and tell the person that is what it is for. |
+
+Commit the change on its own, or in the PR it belongs to. It is a reviewed
+edit like any other.
 
 ## Then fill in the repo-specific part
 
@@ -118,7 +157,8 @@ check that inspected nothing has not passed.
 
 Everything is opt-in through `.factory/config.json`:
 
-- `beats.triage`, `beats.spec`, `beats.monitor`: skip that beat.
+- `beats.triage`, `beats.aim`, `beats.spec`, `beats.monitor`: skip that beat.
+- `agents_md`: `notify` or `off` to stop the plugin hook editing `AGENTS.md`.
 - `ledger`, `memory`, `routing`: skip that data.
 - `loop.enabled`: the weekly loop exits without proposing.
 

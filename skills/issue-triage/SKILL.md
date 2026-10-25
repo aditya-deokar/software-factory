@@ -14,7 +14,7 @@ compatibility: >
   decision. Uses run-ledger and agent-memory when the repo has .factory/.
 metadata:
   author: software-factory
-  version: "1.0"
+  version: "1.1"
 allowed-tools: Bash(gh issue *) Bash(gh search *) Bash(gh label *) Bash(node:*) Bash(git:*)
 ---
 
@@ -32,14 +32,18 @@ runs on every issue.
 
 | Decision | When | What you do |
 |---|---|---|
-| `implement` | Small, unambiguous, and you can name the acceptance check in one sentence | Label `factory:implement`, go to Isolate |
-| `spec` | Ambiguous, cross-cutting, product-visible, a migration, or more than one reasonable design | Label `factory:spec`, hand to `spec-writing` |
+| `implement` | Small, unambiguous, and you can name the acceptance check in one sentence | Label `factory:implement`, go to Aim (`ambition-engine`), then Isolate |
+| `spec` | Ambiguous, cross-cutting, product-visible, a migration, or more than one reasonable design | Label `factory:spec`, set the aim (`ambition-engine`), then hand to `spec-writing` |
 | `duplicate` | Same root cause as an open or recently closed issue | Link it, label `factory:duplicate`, close with a pointer |
 | `needs-info` | You cannot reproduce or classify it without facts only the reporter has | Ask for those exact facts, label `factory:needs-info` |
 | `decline` | Out of scope, working as intended, or not worth the cost | Say why in one or two sentences, label `factory:decline` |
 
 If two decisions seem to fit, pick the more conservative: `spec` over
 `implement`, `needs-info` over guessing.
+
+Triage judges the work as reported. The aim beat that follows may raise the
+target, and when the rung it picks outgrows `implement`, it re-routes the
+task to `spec`. Triage does not try to guess the ambitious version itself.
 
 ## Procedure
 

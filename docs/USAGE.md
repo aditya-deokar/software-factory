@@ -53,7 +53,7 @@ immediately.
 
 ## Wire up the workflow
 
-Installing the skills gives your agent eighteen capabilities it can reach for.
+Installing the skills gives your agent nineteen capabilities it can reach for.
 `AGENTS.md` tells it when to reach for which, in what order, and `.factory/`
 gives the outer loop somewhere to keep its data. That second part is where the
 value is.
@@ -73,8 +73,18 @@ On Windows PowerShell, the global copy is under
 `$HOME\.claude\skills\factory-setup\scripts\setup.mjs`, and a plugin install
 puts it under `$HOME\.claude\plugins`.
 
-It creates `.factory/` and writes `AGENTS.md` (or appends a marked section to
-yours). It never overwrites a file, so rerunning it is safe. Add `--workflows`
+It creates `.factory/` and writes `AGENTS.md` (or appends a section to yours),
+with the factory's part between two markers. It never overwrites a `.factory/`
+file, so rerunning it is safe.
+
+Rerun it after upgrading the skills: it replaces the marked block with the new
+workflow and leaves the rest of `AGENTS.md`, including your repo-specific
+section, alone. If someone edited the block by hand, it says so and waits for
+`--replace-edited`. `--agents-only` syncs just `AGENTS.md`. With the Claude
+Code plugin, the session-start hook does this for you. With npm, add
+`"prepare": "node node_modules/@software-factory/skills/skills/factory-setup/scripts/setup.mjs --agents-only"`
+to the project's scripts. `npx skills add` runs no install hooks, so there
+you run `node "$SETUP" --agents-only` after each add or update. Add `--workflows`
 for the GitHub Actions templates, and read them before committing; the agent
 steps spend API credits.
 
@@ -112,8 +122,8 @@ is actionable.
 
 ## A task, start to finish
 
-What the inner loop looks like in practice. v3 adds a triage step before the
-v2 beats and a monitor step after them, and the ledger records each one.
+What the inner loop looks like in practice. v3 adds triage and an aim before
+the v2 beats and a monitor step after them, and the ledger records each one.
 
 ### 0. Triage, and a spec when needed
 
@@ -122,6 +132,18 @@ one decision. "Implement" moves straight on. "Spec" sends it to
 `spec-writing`, which opens `specs/<slug>.md` as a PR with the open questions
 at the top, and waits for you to approve it. Say "approved" or approve the
 PR; that approval lands in the run record.
+
+### 0b. Aim
+
+Between triage and the spec, `ambition-engine` asks what the issue is for.
+"Fix the crash on the login screen" becomes "people can always log in", with
+three rungs: this crash, every crash with that stack signature, and a
+per-release check that keeps login crash-free. The PR takes the highest rung
+that fits its size and has a judge the agent can run now, say rung 2, judged
+by a reproduction test and the crash rate for the build. Rung 3 becomes an
+issue. The aim block goes in the PR body, and `test-evidence` reports against
+its target, including a miss. Type `/aim` in the plugin, or "be more
+ambitious with this", to run it on demand.
 
 The agent routes the task, then starts a run with the flags the route command
 printed. Copy them rather than typing a tier, or the ledger records a route

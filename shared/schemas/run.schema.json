@@ -41,6 +41,18 @@
             "duplicate_of": { "type": ["string", "null"] }
           }
         },
+        "aim": {
+          "type": "object",
+          "properties": {
+            "types": { "type": "array", "items": { "enum": ["altitude", "depth", "range"] } },
+            "rung": { "type": "integer", "minimum": 1 },
+            "rungs": { "type": "integer", "minimum": 1 },
+            "goal": { "type": "string" },
+            "target": { "type": "string" },
+            "judge": { "type": "string" },
+            "follow_ups": { "type": "array", "items": { "type": "string" } }
+          }
+        },
         "spec": {
           "type": "object",
           "properties": {
@@ -93,7 +105,7 @@
         "required": ["beat", "kind"],
         "additionalProperties": false,
         "properties": {
-          "beat": { "enum": ["triage", "spec", "isolate", "build", "prove", "ship", "monitor"] },
+          "beat": { "enum": ["triage", "aim", "spec", "isolate", "build", "prove", "ship", "monitor"] },
           "kind": { "enum": ["correction", "approval", "rejection", "clarification", "manual-fix"] },
           "ref": { "type": ["string", "null"] },
           "note": { "type": ["string", "null"] },

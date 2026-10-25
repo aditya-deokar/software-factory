@@ -1,8 +1,10 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
+import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { test } from "node:test";
 import { checkPush } from "../../hooks/guard-push.mjs";
+import { managedBlock } from "../../shared/lib/agents-md.mjs";
 import { ROOT, run, skillScript, tempDir, tempRepo, write } from "./helpers.mjs";
 
 const hook = (name) => join(ROOT, "hooks", name);
@@ -107,4 +109,32 @@ test("ledger finish --scope repo counts sessions started in another worktree", (
   assert.match(L("finish", id, "--outcome", "shipped").out, /tokens unknown/);
   // Re-finishing keeps a count, but an empty one is re-read with the wider scope.
   assert.match(L("finish", id, "--outcome", "shipped", "--scope", "repo").out, /tokens 40 in, 0 cached, 2 out/);
+});
+
+test("session-start updates an outdated factory block in AGENTS.md, and only that", () => {
+  const repo = tempRepo("agent/sync");
+  run(skillScript("factory-setup", "setup.mjs"), ["--no-agents-md"], { cwd: repo });
+  const file = join(repo, "AGENTS.md");
+  const stale = `# Ours\n\n${managedBlock("section", "## Software factory\n\nOld text.", "3.0.9")}\n\n### Repo-specific\n\n- **Commands:** make\n`;
+  const start = () => run(hook("session-start.mjs"), [], { input: JSON.stringify({ cwd: repo }) });
+
+  writeFileSync(file, stale);
+  writeFileSync(join(repo, ".factory", "config.json"),
+    readFileSync(join(repo, ".factory", "config.json"), "utf8").replace('"agents_md": "auto"', '"agents_md": "notify"'));
+  const notify = start();
+  assert.match(notify.out, /block is 3\.0\.9; .* is installed\. To update it, run: node ".*setup\.mjs" --agents-only/);
+  assert.equal(readFileSync(file, "utf8"), stale, "notify mode writes nothing");
+
+  writeFileSync(join(repo, ".factory", "config.json"),
+    readFileSync(join(repo, ".factory", "config.json"), "utf8").replace('"agents_md": "notify"', '"agents_md": "auto"'));
+  const auto = start();
+  assert.match(auto.out, /updated the software factory block from 3\.0\.9/);
+  const text = readFileSync(file, "utf8");
+  assert.ok(text.startsWith("# Ours\n\n") && text.endsWith("- **Commands:** make\n"));
+  assert.match(text, /`ambition-engine`/);
+  assert.doesNotMatch(start().out, /AGENTS\.md:/, "a current block says nothing");
+
+  writeFileSync(file, "# Ours, no factory block\n");
+  assert.doesNotMatch(start().out, /AGENTS\.md:/);
+  assert.equal(readFileSync(file, "utf8"), "# Ours, no factory block\n", "the hook never adds a block");
 });

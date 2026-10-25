@@ -1,6 +1,6 @@
 {
   "name": "software-factory",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "A self-improving software factory: triage, spec, isolated build, proof, reviewed PR, monitoring, and an outer loop that improves the skills through reviewed PRs.",
   "author": {
     "name": "Aditya Deokar",

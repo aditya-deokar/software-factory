@@ -1,14 +1,16 @@
-
 ## Software factory
 
 This repo runs the software factory workflow. Skills:
 `npx skills add aditya-deokar/software-factory`.
 
-Inner loop: `issue-triage`, then `spec-writing` when triage says so (a human
-approves before code), `worktree-isolation`, `service-layer`,
-`test-evidence` (before state first, proof scaled to the change),
-`visual-diff` and `code-review-loop` to 5/5, then `release-monitoring` after
-merge. Beats switched off in `.factory/config.json` are skipped.
+Inner loop: `issue-triage`, then `ambition-engine` to set the aim (the goal
+beyond the goal, the rung this PR takes, and an outside judge named before
+code; rungs above it become issues), `spec-writing` when triage or the aim
+says so (a human approves before code), `worktree-isolation`,
+`service-layer`, `test-evidence` (before state first, measured by the aim's
+judge, proof scaled to the change), `visual-diff` and `code-review-loop` to
+5/5, then `release-monitoring` after merge. Beats switched off in
+`.factory/config.json` are skipped.
 
 Outer loop: read `.factory/memory/INDEX.md` at task start (`agent-memory`),
 pick the model tier with `model-routing`, record one run per task with

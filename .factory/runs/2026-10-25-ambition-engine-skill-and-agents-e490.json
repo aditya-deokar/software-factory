@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "id": "2026-10-25-ambition-engine-skill-and-agents-e490",
+  "title": "ambition-engine skill and AGENTS.md sync",
+  "branch": "agent/ambition-engine",
+  "task": {
+    "source": null,
+    "class": "feature",
+    "size": "large"
+  },
+  "harness": "claude-code",
+  "model": {
+    "tier": "frontier",
+    "id": "claude-opus-5-5",
+    "rule": "large"
+  },
+  "beats": {
+    "triage": {
+      "decision": "implement"
+    },
+    "aim": {
+      "rung": 2,
+      "rungs": 3,
+      "goal": "every factory task is aimed above how it was typed, and repos pick up workflow upgrades without hand edits",
+      "target": "aim wired into every beat that consumes it; AGENTS.md upgrades with zero manual edits wherever the install path allows a trigger",
+      "judge": "node tests for setup, hook, and ledger; before/after setup runs on a real v3.0.0 repo; npm test green",
+      "types": [
+        "altitude",
+        "depth"
+      ]
+    },
+    "prove": {
+      "before_captured": true,
+      "evidence": [
+        "output-pair",
+        "test-suite"
+      ]
+    }
+  },
+  "memories": {
+    "used": [],
+    "written": [
+      "skills-cli-no-install-hook"
+    ]
+  },
+  "human_touches": [],
+  "cost": null,
+  "started_at": "2026-10-25T12:46:28Z",
+  "finished_at": null,
+  "outcome": null
+}

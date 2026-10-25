@@ -14,7 +14,7 @@ compatibility: >
   transcripts when they exist; other harnesses record cost as unknown, never zero.
 metadata:
   author: software-factory
-  version: "1.1"
+  version: "1.2"
 allowed-tools: Bash(node:*) Bash(git:*)
 ---
 
@@ -54,6 +54,7 @@ run on the current branch, so after `start` you rarely need the id.
 |---|---|
 | Task starts, after isolating | `start --class bugfix --size small --title "..." --source github:issue/123 --tier balanced --model <id> --rule <rule>` |
 | Triage decided | `beat current triage --set decision=implement` |
+| Aim set | `beat current aim --set rung=2 --set rungs=3 --add types=depth --set judge="..." --add follow_ups=github:issue/141` |
 | Spec approved | `beat current spec --set path=specs/login.md --set approved=true` |
 | Evidence captured | `beat current prove --add evidence=recording --set before_captured=true` |
 | PR open, review done | `beat current ship --set pr=45 --set review_rounds=2 --set final_score=5/5` |
