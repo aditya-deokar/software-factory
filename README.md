@@ -161,9 +161,9 @@ The outer loop runs on data in `.factory/`, committed to git:
   Greptile refuse huge PRs. Use when code-review-loop gets "Too many files changed for
   review".
 
-- **[local-code-review](skills/local-code-review/SKILL.md)** - Autonomous Greptile-style PR review
-  and self-healing loop running locally in Pi CLI with zero API keys and zero paid subscriptions.
-  Uses a strict read-only reviewer (Agent 1) and coding agent (Agent 2) to iterate until 5/5.
+- **[local-code-review](skills/local-code-review/SKILL.md)** - Strictly read-only Greptile-style PR review
+  running locally in Pi CLI with zero API keys and zero paid subscriptions. Inspects PR diffs,
+  produces file/line annotations, and posts formal reviews via dev-loops to GitHub.
 
 ### Craft
 

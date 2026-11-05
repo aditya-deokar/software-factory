@@ -115,10 +115,10 @@ without the service they have nothing to talk to. For repos without Greptile, us
 **Costs** zero API keys and zero subscriptions when executed through the local Pi CLI
 (`~/.pi/agent/auth.json`).
 
-**Returns** the exact same 5/5 confidence code review and self-healing fix loop as Greptile,
-executed 100% locally on your machine with two strictly separated agents (Read-Only Reviewer
-and Autonomous Coder). Resolves the "no Greptile" limitation for private, internal, or
-cost-conscious repositories.
+**Returns** the exact same 5/5 confidence code review and inline annotations as Greptile,
+executed 100% locally on your machine with a strictly read-only reviewer agent.
+It never modifies files, letting your own coding agent address the review feedback and push changes.
+Resolves the "no Greptile" limitation for private, internal, or cost-conscious repositories.
 
 ### prose-cleanup
 
