@@ -15,7 +15,7 @@ rules. Skills: `npx skills add aditya-deokar/software-factory`.
 | Before the first edit | `worktree-isolation` |
 | Writing the code | `service-layer` |
 | Proving it works | `test-evidence`, then `visual-diff` for UI |
-| Opening and reviewing the PR | `code-review-loop`, or `code-review-loop-large` past Greptile's file limit |
+| Opening and reviewing the PR | `code-review-loop`, `local-code-review` (local Pi / zero-cost), or `code-review-loop-large` |
 | After merge | `release-monitoring` |
 | Every task, if `.factory/` exists | `run-ledger`, `agent-memory`, `model-routing` |
 | Weekly, or when asked | `skill-feedback-loop` |
@@ -39,8 +39,8 @@ rules. Skills: `npx skills add aditya-deokar/software-factory`.
    works, measured by the aim's judge. Scale proof to the change; report a
    missed target with its numbers.
 6. **Ship.** PR with the aim and before/after proof in the body, then
-   `code-review-loop` until Greptile reports 5/5 with zero unresolved
-   comments.
+   `code-review-loop` or `local-code-review` until a 5/5 review rating is achieved
+   with zero unresolved comments.
 7. **Monitor.** Check the merge commit; a regression becomes a new issue.
 
 Beats switched off in `.factory/config.json` are skipped.
@@ -84,7 +84,7 @@ touch in the ledger.
 3. Commit, rebase onto `origin/main`, rerun the checks, push.
 4. Open the PR: what changed, the aim (rung, target, judge), evidence for
    every claim, risks, and the `Run:` line from the ledger.
-5. `code-review-loop` to 5/5, zero unresolved. Finish the run record.
+5. `code-review-loop` or `local-code-review` to 5/5, zero unresolved. Finish the run record.
 6. Present the PR URL. Do not merge unless told to. Keep the worktree until
    the PR is merged or closed.
 

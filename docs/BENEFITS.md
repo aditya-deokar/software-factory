@@ -107,7 +107,18 @@ The iteration cap matters. Default 10, and hitting it usually means the PR is
 too large, not that the loop needs more rounds.
 
 **Skip them** if you do not have Greptile. Neither skill degrades gracefully;
-without the service they have nothing to talk to.
+without the service they have nothing to talk to. For repos without Greptile, use
+`local-code-review` instead.
+
+### local-code-review
+
+**Costs** zero API keys and zero subscriptions when executed through the local Pi CLI
+(`~/.pi/agent/auth.json`).
+
+**Returns** the exact same 5/5 confidence code review and self-healing fix loop as Greptile,
+executed 100% locally on your machine with two strictly separated agents (Read-Only Reviewer
+and Autonomous Coder). Resolves the "no Greptile" limitation for private, internal, or
+cost-conscious repositories.
 
 ### prose-cleanup
 

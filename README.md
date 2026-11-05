@@ -9,7 +9,7 @@ Nineteen skills that take work from a new issue to a monitored merge with eviden
 <p align="center">
   <a href="https://www.npmjs.com/package/@software-factory/skills"><img src="https://img.shields.io/npm/v/@software-factory/skills?style=flat-square&color=black" alt="npm version" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License: MIT" /></a>
-  <a href="skills/"><img src="https://img.shields.io/badge/skills.sh-19%20skills-black?style=flat-square&logo=gnubash&logoColor=white" alt="19 skills" /></a>
+  <a href="skills/"><img src="https://img.shields.io/badge/skills.sh-20%20skills-black?style=flat-square&logo=gnubash&logoColor=white" alt="20 skills" /></a>
   <a href="AGENTS.md"><img src="https://img.shields.io/badge/workflow-AGENTS.md-22c55e?style=flat-square" alt="Workflow: AGENTS.md" /></a>
   <a href="https://github.com/vercel-labs/skills#supported-agents"><img src="https://img.shields.io/badge/agents-80%2B%20supported-6366f1?style=flat-square" alt="Supported Agents" /></a>
 </p>
@@ -81,7 +81,7 @@ skills, or run `factory-setup` to do it for you.
 | Isolate | `worktree-isolation` | A worktree and branch per task. Parallel agents stop colliding. |
 | Build | `service-layer` | Boundaries own the why, services own the how. One fix propagates everywhere. |
 | Prove | `test-evidence` | The before state and the after, measured by the aim's judge. Done with proof, or BLOCKED. |
-| Ship | `visual-diff`, `code-review-loop` | Before/after table in the PR, iterated to a clean review. |
+| Ship | `visual-diff`, `code-review-loop`, `local-code-review` | Before/after table in the PR, iterated to a clean review. |
 | Monitor | `release-monitoring` | The merge commit checked; a regression becomes a new issue. |
 
 The outer loop runs on data in `.factory/`, committed to git:
@@ -160,6 +160,10 @@ The outer loop runs on data in `.factory/`, committed to git:
   by tagging `@greptile-apps`, which bypasses the file-count limit that makes
   Greptile refuse huge PRs. Use when code-review-loop gets "Too many files changed for
   review".
+
+- **[local-code-review](skills/local-code-review/SKILL.md)** - Autonomous Greptile-style PR review
+  and self-healing loop running locally in Pi CLI with zero API keys and zero paid subscriptions.
+  Uses a strict read-only reviewer (Agent 1) and coding agent (Agent 2) to iterate until 5/5.
 
 ### Craft
 
@@ -317,7 +321,7 @@ broken skill cannot reach npm.
 
 ## Licensing
 
-Fifteen skills are original work under the root MIT license, which also covers
+Sixteen skills are original work under the root MIT license, which also covers
 the packaging, `scripts/`, the hooks, and the docs. Four are vendored and keep their upstream
 licenses in their own folders: `code-review-loop` and `code-review-loop-large` (MIT, Greptile),
 `prose-cleanup` (MIT, Cursor), and `visual-diff` (PolyForm Shield 1.0.0, Vercel
